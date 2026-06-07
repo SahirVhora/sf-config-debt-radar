@@ -1,0 +1,22 @@
+sf:
+  auth_method: basic
+  base_url: "https://api55.sapsf.eu/odata/v2"
+  username: "admin@COMPANYID"
+  password: ""
+  client_id: ""
+  client_secret: ""
+  company_id: ""
+  token_url: ""
+
+scan:
+  tier1_enabled: true
+  max_null_rate_fields: 25
+
+thresholds:
+  high_field_limit: 100
+  custom_field_limit: 20
+  custom_mdf_warning: 15
+  blank_rate_high: 95
+
+output:
+  report_dir: output

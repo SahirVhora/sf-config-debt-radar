@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+*.egg-info/
+dist/
+build/
+config.yaml
+output/
+*.html
+*.db
+data/exports/
+*.swp
+*.swo
+*~
+.DS_Store

@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="SF Config Debt Radar icon">
+  <defs>
+    <radialGradient id="bg" cx="32%" cy="20%" r="82%">
+      <stop offset="0" stop-color="#2d2611"/>
+      <stop offset="0.48" stop-color="#111317"/>
+      <stop offset="1" stop-color="#050506"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="94" y1="76" x2="430" y2="448" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffe58a"/>
+      <stop offset="0.48" stop-color="#c8a84e"/>
+      <stop offset="1" stop-color="#7d651f"/>
+    </linearGradient>
+    <linearGradient id="sweep" x1="256" y1="256" x2="452" y2="132" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#c8a84e" stop-opacity="0"/>
+      <stop offset="1" stop-color="#c8a84e" stop-opacity="0.72"/>
+    </linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <circle cx="256" cy="256" r="178" fill="none" stroke="#2a2f38" stroke-width="18"/>
+  <circle cx="256" cy="256" r="119" fill="none" stroke="#2a2f38" stroke-width="12"/>
+  <circle cx="256" cy="256" r="54" fill="none" stroke="#2a2f38" stroke-width="10"/>
+  <path d="M256 256 L446 126 A224 224 0 0 1 477 236 Z" fill="url(#sweep)" opacity="0.86"/>
+  <line x1="256" y1="256" x2="432" y2="136" stroke="url(#gold)" stroke-width="16" stroke-linecap="round" filter="url(#glow)"/>
+  <circle cx="256" cy="256" r="24" fill="url(#gold)" filter="url(#glow)"/>
+  <g fill="none" stroke="url(#gold)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M151 188h95c27 0 42 14 42 36s-15 36-42 36h-42c-29 0-45 15-45 37s17 37 45 37h88"/>
+    <path d="M327 188h75"/>
+    <path d="M327 188v146"/>
+    <path d="M327 260h62"/>
+  </g>
+  <circle cx="391" cy="329" r="13" fill="#ef4444"/>
+  <circle cx="122" cy="302" r="10" fill="#f59e0b"/>
+  <circle cx="355" cy="107" r="9" fill="#22c55e"/>
+</svg>

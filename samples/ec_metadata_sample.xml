@@ -1,0 +1,37 @@
+<edmx:Edmx xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx">
+  <edmx:DataServices>
+    <Schema xmlns="http://schemas.microsoft.com/ado/2008/09/edm" Namespace="SFOData">
+      <EntityType Name="EmpJob">
+        <Property Name="userId" Type="Edm.String" Nullable="false" />
+        <Property Name="eventReason" Type="Edm.String" Nullable="true" />
+        <Property Name="customString12" Type="Edm.String" Nullable="true" MaxLength="256" />
+        <Property Name="customString13" Type="Edm.String" Nullable="true" MaxLength="256" />
+        <Property Name="customString14" Type="Edm.String" Nullable="true" MaxLength="256" />
+        <Property Name="startDate" Type="Edm.DateTime" Nullable="false" />
+        <Property Name="lastModifiedDateTime" Type="Edm.DateTime" Nullable="true" />
+      </EntityType>
+      <EntityType Name="EmpEmployment">
+        <Property Name="userId" Type="Edm.String" Nullable="false" />
+        <Property Name="startDate" Type="Edm.DateTime" Nullable="false" />
+      </EntityType>
+      <EntityType Name="Position">
+        <Property Name="code" Type="Edm.String" Nullable="false" />
+        <Property Name="effectiveStartDate" Type="Edm.DateTime" Nullable="false" />
+        <Property Name="effectiveStatus" Type="Edm.String" Nullable="true" />
+        <NavigationProperty Name="departmentNav" ToRole="Department" />
+      </EntityType>
+      <EntityType Name="FODepartment">
+        <Property Name="externalCode" Type="Edm.String" Nullable="false" />
+        <Property Name="name" Type="Edm.String" Nullable="true" />
+      </EntityType>
+      <EntityType Name="EventReason">
+        <Property Name="externalCode" Type="Edm.String" Nullable="false" />
+        <Property Name="name" Type="Edm.String" Nullable="true" />
+      </EntityType>
+      <EntityType Name="cust_ProjectThing">
+        <Property Name="externalCode" Type="Edm.String" Nullable="false" />
+        <Property Name="cust_owner" Type="Edm.String" Nullable="true" />
+      </EntityType>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>
