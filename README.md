@@ -1,6 +1,6 @@
 # SF Config Debt Radar
 
-SAP SuccessFactors EC configuration debt scanner. Analyse metadata, detect config debt, score risk — from your terminal, browser, or any MCP-compatible AI agent.
+SAP SuccessFactors EC configuration debt scanner. Analyse metadata, detect config debt, score risk - from your terminal, browser, or any MCP-compatible AI agent.
 
 ![mcp](https://img.shields.io/badge/MCP-Server-7B61FF)
 ![python](https://img.shields.io/badge/python-3.10%2B-blue)
@@ -55,7 +55,7 @@ python mcp_server.py
 
 ### Connect from any MCP client
 
-**Hermes Agent** — add to `~/.hermes/config.yaml`:
+**Hermes Agent** - add to `~/.hermes/config.yaml`:
 ```yaml
 mcp_servers:
   sf-config-debt-scanner:
@@ -63,7 +63,7 @@ mcp_servers:
     enabled: true
 ```
 
-**Claude Code** — add to `~/.claude/claude_desktop_config.json` (or project `.claude/settings.json`):
+**Claude Code** - add to `~/.claude/claude_desktop_config.json` (or project `.claude/settings.json`):
 ```json
 {
   "mcpServers": {
@@ -75,7 +75,7 @@ mcp_servers:
 }
 ```
 
-**Cursor** — add under Settings > MCP Servers:
+**Cursor** - add under Settings > MCP Servers:
 ```
 name: sf-config-debt-scanner
 type: command
@@ -88,7 +88,7 @@ command: python /path/to/sf-config-debt-radar/mcp_server.py
 |------|-------------|
 | `sf_scan_metadata_xml` | Analyse raw $metadata XML for config debt (offline) |
 | `sf_test_connection` | Test OData v2 connectivity + get entity counts |
-| `sf_scan_tenant` | Full live tenant scan — pulls metadata + $count checks |
+| `sf_scan_tenant` | Full live tenant scan - pulls metadata + $count checks |
 | `sf_assessment_questions` | Generate guided config debt workshop questions |
 | `sf_rate_findings` | Score a set of findings with debt score + roadmap |
 | `sf_known_ec_entities` | List entity patterns the scanner recognises |

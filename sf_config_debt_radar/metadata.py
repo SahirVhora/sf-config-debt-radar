@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 import xml.etree.ElementTree as ET
 from typing import Any
 
@@ -43,7 +44,52 @@ FOUNDATION_ENTITIES = {
     "FOGeozone",
 }
 
-CUSTOM_PATTERNS = ("custom", "cust_", "customString", "custom-string", "cust_")
+STANDARD_CUSTOM_SLOT_RE = re.compile(
+    r"^custom(String|Long|Double|Date|Bool|Boolean|Integer|Decimal)\d+$",
+    re.IGNORECASE,
+)
+
+
+def _attribute_by_local_name(element: ET.Element, names: set[str]) -> str:
+    for key, value in element.attrib.items():
+        local_name = key.rsplit("}", 1)[-1].split(":", 1)[-1]
+        if local_name in names:
+            return value
+    return ""
+
+
+def _is_generic_slot_label(field_name: str, label: str) -> bool:
+    compact = re.sub(r"[\s_-]+", "", label)
+    if compact.lower() == field_name.lower():
+        return True
+    return bool(
+        re.match(
+            r"^custom\s*(string|long|date|double|bool|boolean|integer|decimal)?\s*\d+$",
+            label,
+            re.IGNORECASE,
+        )
+    )
+
+
+def is_enabled_custom_field(field_name: str, property_element: ET.Element | None = None) -> bool:
+    """Return True for custom fields that look configured, not inactive delivered slots."""
+    if field_name.startswith("cust_"):
+        return True
+    if "custom" not in field_name.lower():
+        return False
+    if not STANDARD_CUSTOM_SLOT_RE.match(field_name):
+        return True
+    if property_element is None:
+        return False
+
+    visible = _attribute_by_local_name(property_element, {"visible"})
+    if visible.lower() == "false":
+        return False
+
+    label = _attribute_by_local_name(property_element, {"label", "quickinfo"}).strip()
+    if not label:
+        return False
+    return not _is_generic_slot_label(field_name, label)
 
 
 def parse_metadata_xml(xml_text: str) -> dict[str, dict[str, Any]]:
@@ -70,7 +116,8 @@ def parse_metadata_xml(xml_text: str) -> dict[str, dict[str, Any]]:
                 field_type = child.get("Type", "")
                 nullable = child.get("Nullable", "true").lower() == "true"
                 max_length = child.get("MaxLength")
-                if any(field_name.startswith(p) for p in CUSTOM_PATTERNS) or "custom" in field_name.lower():
+                is_custom = is_enabled_custom_field(field_name, child)
+                if is_custom:
                     custom_field_count += 1
                 if not nullable:
                     required_fields.append(field_name)
@@ -89,7 +136,7 @@ def parse_metadata_xml(xml_text: str) -> dict[str, dict[str, Any]]:
                     "type": field_type,
                     "nullable": nullable,
                     "max_length": max_length,
-                    "is_custom": any(field_name.startswith(p) for p in CUSTOM_PATTERNS) or "custom" in field_name.lower(),
+                    "is_custom": is_custom,
                 })
             elif child.tag.endswith("}NavigationProperty") or child.tag == "NavigationProperty":
                 nav_props.append({

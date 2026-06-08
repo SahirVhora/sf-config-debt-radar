@@ -13,7 +13,8 @@ SAMPLE_METADATA = textwrap.dedent('''
       <EntityType Name="EmpJob">
         <Property Name="userId" Type="Edm.String" Nullable="false" />
         <Property Name="eventReason" Type="Edm.String" Nullable="true" />
-        <Property Name="customString12" Type="Edm.String" Nullable="true" MaxLength="256" />
+        <Property Name="customString12" Type="Edm.String" Nullable="true" MaxLength="256" sap:label="Retention risk" xmlns:sap="http://www.sap.com/Protocols/SAPData" />
+        <Property Name="customString13" Type="Edm.String" Nullable="true" MaxLength="256" />
         <Property Name="startDate" Type="Edm.DateTime" Nullable="false" />
         <Property Name="lastModifiedDateTime" Type="Edm.DateTime" Nullable="true" />
       </EntityType>
@@ -45,7 +46,7 @@ def test_token_url_is_derived_from_odata_host():
 
 def test_metadata_parser_extracts_entities_fields_and_effective_dates():
     entities = parse_metadata_xml(SAMPLE_METADATA)
-    assert entities["EmpJob"]["field_count"] == 5
+    assert entities["EmpJob"]["field_count"] == 6
     assert entities["EmpJob"]["custom_field_count"] == 1
     assert entities["Position"]["has_effective_start_date"] is True
     assert entities["Position"]["nav_props"][0]["name"] == "departmentNav"
@@ -57,6 +58,14 @@ def test_classify_ec_entities_finds_core_and_custom_entities():
     assert "EmpJob" in classified["core_ec"]
     assert "Position" in classified["core_ec"]
     assert "cust_ProjectThing" in classified["custom_mdf"]
+
+
+def test_metadata_parser_ignores_inactive_delivered_custom_slots():
+    entities = parse_metadata_xml(SAMPLE_METADATA)
+    fields = {field["name"]: field for field in entities["EmpJob"]["fields"]}
+    assert fields["customString12"]["is_custom"] is True
+    assert fields["customString13"]["is_custom"] is False
+    assert entities["EmpJob"]["custom_field_count"] == 1
 
 
 def test_scoring_prioritises_high_risk_business_rules_rbp_and_fields():

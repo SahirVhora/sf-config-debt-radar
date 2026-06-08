@@ -1,40 +1,21 @@
-#!/usr/bin/env python3
-"""Debug test: print raw MCP responses."""
+"""Focused MCP tool wrapper tests."""
+
 import json
-import subprocess
-from pathlib import Path
 
-SERVER = Path(__file__).resolve().parent / "mcp_server.py"
-VENV_PYTHON = Path(__file__).resolve().parent / "venv" / "bin" / "python"
+import pytest
 
-proc = subprocess.Popen(
-    [str(VENV_PYTHON), str(SERVER)],
-    stdin=subprocess.PIPE,
-    stdout=subprocess.PIPE,
-    stderr=subprocess.PIPE,
-    text=True,
-)
+pytest.importorskip("mcp.server.fastmcp")
 
-def send(msg: dict) -> dict:
-    proc.stdin.write(json.dumps(msg) + "\n")
-    proc.stdin.flush()
-    return json.loads(proc.stdout.readline())
+from mcp_server import about_tool, known_ec_entities_tool
 
-# Initialize
-resp = send({"jsonrpc": "2.0", "id": 1, "method": "initialize",
-             "params": {"protocolVersion": "2025-03-26", "capabilities": {}, "clientInfo": {"name": "test", "version": "1.0"}}})
-print("INIT response keys:", list(resp.keys()))
-print("INIT result keys:", list(resp.get("result", {}).keys()))
 
-# Call sf_about
-resp = send({"jsonrpc": "2.0", "id": 2, "method": "tools/call",
-             "params": {"name": "sf_about", "arguments": {}}})
-print("\nABOUT response keys:", list(resp.keys()))
-print("ABOUT content type:", type(resp.get("result", {}).get("content", [])))
-content = resp.get("result", {}).get("content", [])
-if content:
-    print("First content type:", content[0].get("type"))
-    print("First content text (first 500):", content[0].get("text", "")[:500])
+def test_mcp_about_tool_returns_server_metadata():
+    payload = json.loads(about_tool())
+    assert payload["project"] == "sf-config-debt-radar"
+    assert "sf_scan_metadata_xml" in payload["tools"]
 
-proc.stdin.close()
-proc.wait()
+
+def test_mcp_known_entities_tool_returns_core_entities():
+    payload = json.loads(known_ec_entities_tool())
+    assert "EmpJob" in payload["core_ec_entities"]
+    assert payload["custom_patterns"] == ["cust_", "custom_"]
