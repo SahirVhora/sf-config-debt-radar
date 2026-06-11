@@ -172,4 +172,4 @@ Related tools:
 
 - [Position Integrity Checker](https://github.com/SahirVhora/sf-position-integrity-checker) - Validate position data integrity
 - [Config Compare](https://github.com/SahirVhora/sf-config-compare) - Compare metadata and picklists across tenants
-- [ObjectSync](https://github.com/SahirVhora/SAPSF_ObjectSync) - Sync OM foundation objects PRD to Dev
+- [ObjectSync](https://github.com/SahirVhora/sf-object-sync) - Sync OM foundation objects PRD to Dev
