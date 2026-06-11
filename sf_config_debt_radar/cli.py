@@ -34,7 +34,9 @@ def build_findings_v1(report: dict[str, Any]) -> dict[str, Any]:
                 "object_type": "EntityType",
                 "object_id": item.get("object", ""),
                 "field": "",
-                "message": f"{item.get('title', '')}: {item.get('detail', '')}".strip(": "),
+                "message": f"{item.get('title', '')}: {item.get('detail', '')}".strip(
+                    ": "
+                ),
                 "details": {"recommendation": item.get("recommendation", "")},
             }
         )
@@ -68,7 +70,9 @@ def save_outputs(report: dict[str, Any], output_dir: str | Path) -> tuple[Path, 
     return json_path, html_path
 
 
-def run_scan(config: dict[str, Any], metadata_file: str | None = None) -> dict[str, Any]:
+def run_scan(
+    config: dict[str, Any], metadata_file: str | None = None
+) -> dict[str, Any]:
     if metadata_file:
         xml_text = Path(metadata_file).read_text(encoding="utf-8")
         result = scan_metadata_xml(xml_text, config)
@@ -85,14 +89,18 @@ def run_scan(config: dict[str, Any], metadata_file: str | None = None) -> dict[s
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="EC-only SuccessFactors configuration debt scanner")
+    parser = argparse.ArgumentParser(
+        description="EC-only SuccessFactors configuration debt scanner"
+    )
     parser.add_argument(
         "command",
         choices=["scan", "metadata-demo", "demo"],
         help="Command to run (demo scans a bundled realistic sample tenant - no credentials needed)",
     )
     parser.add_argument("--config", default="config.yaml", help="YAML config path")
-    parser.add_argument("--metadata-file", help="Use local $metadata XML file instead of live tenant")
+    parser.add_argument(
+        "--metadata-file", help="Use local $metadata XML file instead of live tenant"
+    )
     parser.add_argument("--output", default="output", help="Output directory")
     args = parser.parse_args(argv)
 
@@ -106,7 +114,9 @@ def main(argv: list[str] | None = None) -> int:
     json_path, html_path = save_outputs(report, args.output)
     print(f"JSON report: {json_path}")
     print(f"HTML report: {html_path}")
-    print(f"Overall score: {report['score']['overall_score']} ({report['score']['risk_level']})")
+    print(
+        f"Overall score: {report['score']['overall_score']} ({report['score']['risk_level']})"
+    )
     return 0
 
 

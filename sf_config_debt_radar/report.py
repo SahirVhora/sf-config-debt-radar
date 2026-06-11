@@ -10,32 +10,45 @@ from typing import Any
 from .scoring import score_debt
 
 
-def build_report_model(metadata_summary: dict[str, Any], findings: list[dict[str, Any]]) -> dict[str, Any]:
+def build_report_model(
+    metadata_summary: dict[str, Any], findings: list[dict[str, Any]]
+) -> dict[str, Any]:
     score = score_debt(findings)
     return {
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "summary": metadata_summary,
         "score": score,
-        "findings": sorted(findings, key=lambda f: {"CRITICAL": 0, "HIGH": 1, "MEDIUM": 2, "LOW": 3}.get(str(f.get("severity", "LOW")).upper(), 4)),
+        "findings": sorted(
+            findings,
+            key=lambda f: {"CRITICAL": 0, "HIGH": 1, "MEDIUM": 2, "LOW": 3}.get(
+                str(f.get("severity", "LOW")).upper(), 4
+            ),
+        ),
         "roadmap": build_roadmap(findings),
     }
 
 
 def build_roadmap(findings: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    high = [f for f in findings if str(f.get("severity", "")).upper() in {"CRITICAL", "HIGH"}]
+    high = [
+        f
+        for f in findings
+        if str(f.get("severity", "")).upper() in {"CRITICAL", "HIGH"}
+    ]
     medium = [f for f in findings if str(f.get("severity", "")).upper() == "MEDIUM"]
     return [
         {
             "phase": "Phase 1",
             "title": "Quick wins and control gaps",
             "timeline": "1-2 weeks",
-            "actions": [action_text(f) for f in high[:6]] or ["Confirm scope, owners, and access for the EC configuration baseline."],
+            "actions": [action_text(f) for f in high[:6]]
+            or ["Confirm scope, owners, and access for the EC configuration baseline."],
         },
         {
             "phase": "Phase 2",
             "title": "Risk reduction and simplification",
             "timeline": "3-6 weeks",
-            "actions": [action_text(f) for f in (high[6:10] + medium[:4])] or ["Rationalise duplicate configuration and document critical decisions."],
+            "actions": [action_text(f) for f in (high[6:10] + medium[:4])]
+            or ["Rationalise duplicate configuration and document critical decisions."],
         },
         {
             "phase": "Phase 3",
@@ -67,8 +80,9 @@ def render_html_report(report: dict[str, Any]) -> str:
         for area, value in score["area_scores"].items()
     )
     roadmap = "\n".join(
-        f"<section class='phase'><h3>{html.escape(p['phase'])}: {html.escape(p['title'])}</h3><p>{html.escape(p['timeline'])}</p><ul>" +
-        "".join(f"<li>{html.escape(a)}</li>" for a in p["actions"]) + "</ul></section>"
+        f"<section class='phase'><h3>{html.escape(p['phase'])}: {html.escape(p['title'])}</h3><p>{html.escape(p['timeline'])}</p><ul>"
+        + "".join(f"<li>{html.escape(a)}</li>" for a in p["actions"])
+        + "</ul></section>"
         for p in report["roadmap"]
     )
     data_json = html.escape(json.dumps(report, indent=2))

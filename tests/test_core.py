@@ -6,7 +6,7 @@ from sf_config_debt_radar.scoring import score_debt
 from sf_config_debt_radar.report import build_report_model
 
 
-SAMPLE_METADATA = textwrap.dedent('''
+SAMPLE_METADATA = textwrap.dedent("""
 <edmx:Edmx xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata">
   <edmx:DataServices>
     <Schema xmlns="http://schemas.microsoft.com/ado/2008/09/edm" Namespace="SFOData">
@@ -31,7 +31,7 @@ SAMPLE_METADATA = textwrap.dedent('''
     </Schema>
   </edmx:DataServices>
 </edmx:Edmx>
-''')
+""")
 
 
 def test_basic_auth_header_uses_username_at_company_format():
@@ -41,7 +41,10 @@ def test_basic_auth_header_uses_username_at_company_format():
 
 
 def test_token_url_is_derived_from_odata_host():
-    assert derive_token_url("https://api55.sapsf.eu/odata/v2/") == "https://api55.sapsf.eu/oauth/token"
+    assert (
+        derive_token_url("https://api55.sapsf.eu/odata/v2/")
+        == "https://api55.sapsf.eu/oauth/token"
+    )
 
 
 def test_metadata_parser_extracts_entities_fields_and_effective_dates():
@@ -83,7 +86,14 @@ def test_scoring_prioritises_high_risk_business_rules_rbp_and_fields():
 
 def test_report_model_contains_summary_findings_and_roadmap():
     metadata_summary = {"entity_count": 3, "custom_mdf_count": 1, "ec_entity_count": 2}
-    findings = [{"severity": "HIGH", "area": "Custom Fields", "title": "Hidden field debt", "detail": "customString12 appears unused"}]
+    findings = [
+        {
+            "severity": "HIGH",
+            "area": "Custom Fields",
+            "title": "Hidden field debt",
+            "detail": "customString12 appears unused",
+        }
+    ]
     report = build_report_model(metadata_summary, findings)
     assert report["summary"]["entity_count"] == 3
     assert report["score"]["overall_score"] <= 100

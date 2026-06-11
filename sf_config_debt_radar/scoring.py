@@ -41,10 +41,14 @@ def score_debt(findings: list[dict[str, Any]]) -> dict[str, Any]:
     area_scores = {}
     for area, weight in AREA_WEIGHTS.items():
         area_debt = debt_by_area.get(area, 0)
-        area_scores[area] = max(0, min(100, 100 - round(area_debt / max(weight, 1) * 8)))
+        area_scores[area] = max(
+            0, min(100, 100 - round(area_debt / max(weight, 1) * 8))
+        )
 
     total_weight = sum(AREA_WEIGHTS.values())
-    overall = round(sum(area_scores[a] * AREA_WEIGHTS[a] for a in AREA_WEIGHTS) / total_weight)
+    overall = round(
+        sum(area_scores[a] * AREA_WEIGHTS[a] for a in AREA_WEIGHTS) / total_weight
+    )
     if overall >= 85:
         risk = "Low"
     elif overall >= 70:

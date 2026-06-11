@@ -71,7 +71,9 @@ def _is_generic_slot_label(field_name: str, label: str) -> bool:
     )
 
 
-def is_enabled_custom_field(field_name: str, property_element: ET.Element | None = None) -> bool:
+def is_enabled_custom_field(
+    field_name: str, property_element: ET.Element | None = None
+) -> bool:
     """Return True for custom fields that look configured, not inactive delivered slots."""
     if field_name.startswith("cust_"):
         return True
@@ -123,27 +125,42 @@ def parse_metadata_xml(xml_text: str) -> dict[str, dict[str, Any]]:
                     required_fields.append(field_name)
                 else:
                     nullable_count += 1
-                if field_name in {"effectiveStartDate", "cust_effectiveStartDate", "startDate"}:
+                if field_name in {
+                    "effectiveStartDate",
+                    "cust_effectiveStartDate",
+                    "startDate",
+                }:
                     has_effective_start = True
-                if field_name in {"effectiveEndDate", "cust_effectiveEndDate", "endDate"}:
+                if field_name in {
+                    "effectiveEndDate",
+                    "cust_effectiveEndDate",
+                    "endDate",
+                }:
                     has_effective_end = True
                 if field_name in {"status", "effectiveStatus", "active"}:
                     has_status = True
                 if "lastmodified" in field_name.lower():
                     has_last_modified = True
-                fields.append({
-                    "name": field_name,
-                    "type": field_type,
-                    "nullable": nullable,
-                    "max_length": max_length,
-                    "is_custom": is_custom,
-                })
-            elif child.tag.endswith("}NavigationProperty") or child.tag == "NavigationProperty":
-                nav_props.append({
-                    "name": child.get("Name", ""),
-                    "to": child.get("To", "") or child.get("ToRole", ""),
-                    "relationship": child.get("Relationship", ""),
-                })
+                fields.append(
+                    {
+                        "name": field_name,
+                        "type": field_type,
+                        "nullable": nullable,
+                        "max_length": max_length,
+                        "is_custom": is_custom,
+                    }
+                )
+            elif (
+                child.tag.endswith("}NavigationProperty")
+                or child.tag == "NavigationProperty"
+            ):
+                nav_props.append(
+                    {
+                        "name": child.get("Name", ""),
+                        "to": child.get("To", "") or child.get("ToRole", ""),
+                        "relationship": child.get("Relationship", ""),
+                    }
+                )
         entities[name] = {
             "name": name,
             "fields": fields,
@@ -160,7 +177,9 @@ def parse_metadata_xml(xml_text: str) -> dict[str, dict[str, Any]]:
     return entities
 
 
-def classify_ec_entities(entities: dict[str, dict[str, Any]]) -> dict[str, dict[str, dict[str, Any]]]:
+def classify_ec_entities(
+    entities: dict[str, dict[str, Any]],
+) -> dict[str, dict[str, dict[str, Any]]]:
     core_ec = {}
     custom_mdf = {}
     foundation = {}
@@ -191,5 +210,7 @@ def metadata_summary(entities: dict[str, dict[str, Any]]) -> dict[str, int]:
         "foundation_count": len(classified["foundation"]),
         "picklist_entity_count": len(classified["picklists"]),
         "custom_field_count": sum(e["custom_field_count"] for e in entities.values()),
-        "high_field_entity_count": sum(1 for e in entities.values() if e["field_count"] >= 100),
+        "high_field_entity_count": sum(
+            1 for e in entities.values() if e["field_count"] >= 100
+        ),
     }

@@ -57,10 +57,14 @@ class SFClient:
         if self.auth_method == "basic":
             if not self.username or not self.password:
                 raise ValueError("username and password are required for basic auth")
-            self.session.headers.update({
-                "Authorization": build_basic_auth_header(self.username, self.password),
-                "Accept": "application/json",
-            })
+            self.session.headers.update(
+                {
+                    "Authorization": build_basic_auth_header(
+                        self.username, self.password
+                    ),
+                    "Accept": "application/json",
+                }
+            )
         elif self.auth_method == "oauth2":
             if not self.client_id or not self.client_secret:
                 raise ValueError("client_id and client_secret are required for oauth2")
@@ -99,20 +103,26 @@ class SFClient:
         payload = response.json()
         token = payload["access_token"]
         self._token_expiry = time.time() + int(payload.get("expires_in", 3600)) - 60
-        self.session.headers.update({"Authorization": f"Bearer {token}", "Accept": "application/json"})
+        self.session.headers.update(
+            {"Authorization": f"Bearer {token}", "Accept": "application/json"}
+        )
 
     def ensure_token(self) -> None:
         if self.auth_method == "oauth2" and time.time() >= self._token_expiry:
             self.refresh_token()
 
-    def get(self, path: str, *, accept: str = "application/json", timeout: int = 60) -> requests.Response:
+    def get(
+        self, path: str, *, accept: str = "application/json", timeout: int = 60
+    ) -> requests.Response:
         self.ensure_token()
         url = path if path.startswith("http") else f"{self.base_url}/{path.lstrip('/')}"
         headers = dict(self.session.headers)
         headers["Accept"] = accept
         return self.session.get(url, headers=headers, timeout=timeout)
 
-    def get_text(self, path: str, *, accept: str = "application/json", timeout: int = 60) -> str:
+    def get_text(
+        self, path: str, *, accept: str = "application/json", timeout: int = 60
+    ) -> str:
         response = self.get(path, accept=accept, timeout=timeout)
         response.raise_for_status()
         return response.text
@@ -137,4 +147,7 @@ class SFClient:
             value = self.count(entity)
             if value is not None:
                 return True, f"Connected via {entity}. Count: {value}"
-        return False, "Could not read EmpJob, PerPerson, or User count. Check credentials and RBP permissions."
+        return (
+            False,
+            "Could not read EmpJob, PerPerson, or User count. Check credentials and RBP permissions.",
+        )
