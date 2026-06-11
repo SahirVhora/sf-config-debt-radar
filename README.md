@@ -25,8 +25,14 @@ Zero employee data is stored or leaves the tenant. Schema metadata, entity count
 ```bash
 pip install -r requirements.txt
 
-# Offline metadata demo (no tenant needed)
-python -m sf_config_debt_radar metadata-demo --output output
+# Try it in 60 seconds - scans a bundled realistic sample tenant,
+# no credentials or SF access needed. Produces an HTML report with
+# 10 findings (custom MDF sprawl, field concentration, missing
+# effective dating) and a debt score of 85.
+python -m sf_config_debt_radar demo --output output
+
+# Scan your own $metadata XML offline (no tenant connection)
+python -m sf_config_debt_radar metadata-demo --metadata-file your_metadata.xml --output output
 
 # Live tenant scan
 cp config.example.yaml config.yaml

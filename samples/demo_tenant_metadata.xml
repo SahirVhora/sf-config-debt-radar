@@ -1,0 +1,264 @@
+<edmx:Edmx xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx">
+  <edmx:DataServices>
+    <Schema xmlns="http://schemas.microsoft.com/ado/2008/09/edm" Namespace="SFOData">
+      <EntityType Name="EmpJob">
+        <Property Name="userId" Type="Edm.String" Nullable="false" />
+        <Property Name="eventReason" Type="Edm.String" Nullable="true" />
+        <Property Name="startDate" Type="Edm.DateTime" Nullable="false" />
+        <Property Name="customString1" Type="Edm.String" Nullable="true" MaxLength="256" visible="true" label="Fleet Card Number" />
+        <Property Name="customString2" Type="Edm.String" Nullable="true" MaxLength="256" visible="true" label="Uniform Size" />
+        <Property Name="customString3" Type="Edm.String" Nullable="true" MaxLength="256" visible="true" label="Badge Zone" />
+        <Property Name="customString4" Type="Edm.String" Nullable="true" MaxLength="256" visible="true" label="Probation Outcome" />
+        <Property Name="customString5" Type="Edm.String" Nullable="true" MaxLength="256" visible="true" label="Union Chapter" />
+        <Property Name="customString6" Type="Edm.String" Nullable="true" MaxLength="256" visible="true" label="Visa Class" />
+        <Property Name="customString7" Type="Edm.String" Nullable="true" MaxLength="256" visible="true" label="Shift Pattern" />
+        <Property Name="customString8" Type="Edm.String" Nullable="true" MaxLength="256" visible="true" label="Locker Number" />
+        <Property Name="customString9" Type="Edm.String" Nullable="true" MaxLength="256" visible="true" label="Parking Bay" />
+        <Property Name="customString10" Type="Edm.String" Nullable="true" MaxLength="256" visible="true" label="Laptop Asset Tag" />
+        <Property Name="customString11" Type="Edm.String" Nullable="true" MaxLength="256" visible="true" label="Desk Location" />
+        <Property Name="customString12" Type="Edm.String" Nullable="true" MaxLength="256" visible="true" label="Cost Approver" />
+        <Property Name="customString13" Type="Edm.String" Nullable="true" MaxLength="256" visible="true" label="Travel Profile" />
+        <Property Name="customString14" Type="Edm.String" Nullable="true" MaxLength="256" visible="true" label="Security Clearance" />
+        <Property Name="customString15" Type="Edm.String" Nullable="true" MaxLength="256" visible="true" label="Language Skills" />
+        <Property Name="customString16" Type="Edm.String" Nullable="true" MaxLength="256" visible="true" label="Emergency Contact Notes" />
+        <Property Name="customString17" Type="Edm.String" Nullable="true" MaxLength="256" visible="true" label="Previous Employer" />
+        <Property Name="customString18" Type="Edm.String" Nullable="true" MaxLength="256" visible="true" label="Onboarding Buddy" />
+        <Property Name="customString19" Type="Edm.String" Nullable="true" MaxLength="256" visible="true" label="Workwear Issued" />
+        <Property Name="customString20" Type="Edm.String" Nullable="true" MaxLength="256" visible="true" label="Site Induction Date" />
+        <Property Name="customString21" Type="Edm.String" Nullable="true" MaxLength="256" visible="true" label="DBS Check Status" />
+        <Property Name="customString22" Type="Edm.String" Nullable="true" MaxLength="256" visible="true" label="Driving Licence Class" />
+        <Property Name="customString23" Type="Edm.String" Nullable="true" MaxLength="256" visible="true" label="First Aid Cert Expiry" />
+        <Property Name="customString24" Type="Edm.String" Nullable="true" MaxLength="256" visible="true" label="Long Service Date" />
+      </EntityType>
+      <EntityType Name="EmpCompensation">
+        <Property Name="userId" Type="Edm.String" Nullable="false" />
+        <Property Name="startDate" Type="Edm.DateTime" Nullable="false" />
+        <Property Name="payComponent1" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent2" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent3" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent4" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent5" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent6" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent7" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent8" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent9" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent10" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent11" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent12" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent13" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent14" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent15" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent16" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent17" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent18" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent19" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent20" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent21" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent22" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent23" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent24" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent25" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent26" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent27" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent28" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent29" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent30" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent31" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent32" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent33" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent34" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent35" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent36" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent37" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent38" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent39" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent40" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent41" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent42" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent43" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent44" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent45" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent46" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent47" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent48" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent49" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent50" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent51" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent52" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent53" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent54" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent55" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent56" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent57" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent58" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent59" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent60" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent61" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent62" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent63" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent64" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent65" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent66" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent67" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent68" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent69" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent70" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent71" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent72" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent73" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent74" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent75" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent76" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent77" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent78" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent79" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent80" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent81" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent82" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent83" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent84" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent85" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent86" Type="Edm.String" Nullable="true" />
+        <Property Name="payComponent87" Type="Edm.String" Nullable="true" />
+        <Property Name="customDouble1" Type="Edm.Double" Nullable="true" />
+        <Property Name="customDouble2" Type="Edm.Double" Nullable="true" />
+        <Property Name="customDouble3" Type="Edm.Double" Nullable="true" />
+        <Property Name="customDouble4" Type="Edm.Double" Nullable="true" />
+        <Property Name="customDouble5" Type="Edm.Double" Nullable="true" />
+        <Property Name="customDouble6" Type="Edm.Double" Nullable="true" />
+        <Property Name="customDouble7" Type="Edm.Double" Nullable="true" />
+        <Property Name="customDouble8" Type="Edm.Double" Nullable="true" />
+        <Property Name="customDouble9" Type="Edm.Double" Nullable="true" />
+        <Property Name="customDouble10" Type="Edm.Double" Nullable="true" />
+        <Property Name="customDouble11" Type="Edm.Double" Nullable="true" />
+        <Property Name="customDouble12" Type="Edm.Double" Nullable="true" />
+        <Property Name="customDouble13" Type="Edm.Double" Nullable="true" />
+        <Property Name="customDouble14" Type="Edm.Double" Nullable="true" />
+        <Property Name="customDouble15" Type="Edm.Double" Nullable="true" />
+        <Property Name="customDouble16" Type="Edm.Double" Nullable="true" />
+      </EntityType>
+      <EntityType Name="EmpEmployment">
+        <Property Name="userId" Type="Edm.String" Nullable="false" />
+        <Property Name="startDate" Type="Edm.DateTime" Nullable="false" />
+      </EntityType>
+      <EntityType Name="PerPersonal">
+        <Property Name="personIdExternal" Type="Edm.String" Nullable="false" />
+        <Property Name="firstName" Type="Edm.String" Nullable="true" />
+        <Property Name="lastName" Type="Edm.String" Nullable="true" />
+        <Property Name="startDate" Type="Edm.DateTime" Nullable="false" />
+      </EntityType>
+      <EntityType Name="Position">
+        <Property Name="code" Type="Edm.String" Nullable="false" />
+        <Property Name="effectiveStartDate" Type="Edm.DateTime" Nullable="false" />
+        <Property Name="effectiveStatus" Type="Edm.String" Nullable="true" />
+      </EntityType>
+      <EntityType Name="cust_CarFleet">
+        <Property Name="externalCode" Type="Edm.String" Nullable="false" />
+        <Property Name="externalName" Type="Edm.String" Nullable="true" />
+        <Property Name="mdfSystemRecordStatus" Type="Edm.String" Nullable="true" />
+        <Property Name="effectiveStartDate" Type="Edm.DateTime" Nullable="false" />
+      </EntityType>
+      <EntityType Name="cust_UniformIssue">
+        <Property Name="externalCode" Type="Edm.String" Nullable="false" />
+        <Property Name="externalName" Type="Edm.String" Nullable="true" />
+        <Property Name="mdfSystemRecordStatus" Type="Edm.String" Nullable="true" />
+        <Property Name="effectiveStartDate" Type="Edm.DateTime" Nullable="false" />
+      </EntityType>
+      <EntityType Name="cust_BadgeAccess">
+        <Property Name="externalCode" Type="Edm.String" Nullable="false" />
+        <Property Name="externalName" Type="Edm.String" Nullable="true" />
+        <Property Name="mdfSystemRecordStatus" Type="Edm.String" Nullable="true" />
+        <Property Name="effectiveStartDate" Type="Edm.DateTime" Nullable="false" />
+      </EntityType>
+      <EntityType Name="cust_TrainingMatrix">
+        <Property Name="externalCode" Type="Edm.String" Nullable="false" />
+        <Property Name="externalName" Type="Edm.String" Nullable="true" />
+        <Property Name="mdfSystemRecordStatus" Type="Edm.String" Nullable="true" />
+        <Property Name="effectiveStartDate" Type="Edm.DateTime" Nullable="false" />
+      </EntityType>
+      <EntityType Name="cust_OnCallRota">
+        <Property Name="externalCode" Type="Edm.String" Nullable="false" />
+        <Property Name="externalName" Type="Edm.String" Nullable="true" />
+        <Property Name="mdfSystemRecordStatus" Type="Edm.String" Nullable="true" />
+        <Property Name="effectiveStartDate" Type="Edm.DateTime" Nullable="false" />
+      </EntityType>
+      <EntityType Name="cust_VisaTracking">
+        <Property Name="externalCode" Type="Edm.String" Nullable="false" />
+        <Property Name="externalName" Type="Edm.String" Nullable="true" />
+        <Property Name="mdfSystemRecordStatus" Type="Edm.String" Nullable="true" />
+        <Property Name="effectiveStartDate" Type="Edm.DateTime" Nullable="false" />
+      </EntityType>
+      <EntityType Name="cust_GrievanceLog">
+        <Property Name="externalCode" Type="Edm.String" Nullable="false" />
+        <Property Name="externalName" Type="Edm.String" Nullable="true" />
+        <Property Name="mdfSystemRecordStatus" Type="Edm.String" Nullable="true" />
+        <Property Name="effectiveStartDate" Type="Edm.DateTime" Nullable="false" />
+      </EntityType>
+      <EntityType Name="cust_AssetRegister">
+        <Property Name="externalCode" Type="Edm.String" Nullable="false" />
+        <Property Name="externalName" Type="Edm.String" Nullable="true" />
+        <Property Name="mdfSystemRecordStatus" Type="Edm.String" Nullable="true" />
+        <Property Name="effectiveStartDate" Type="Edm.DateTime" Nullable="false" />
+      </EntityType>
+      <EntityType Name="cust_HealthSurveillance">
+        <Property Name="externalCode" Type="Edm.String" Nullable="false" />
+        <Property Name="externalName" Type="Edm.String" Nullable="true" />
+        <Property Name="mdfSystemRecordStatus" Type="Edm.String" Nullable="true" />
+        <Property Name="effectiveStartDate" Type="Edm.DateTime" Nullable="false" />
+      </EntityType>
+      <EntityType Name="cust_UnionMembership">
+        <Property Name="externalCode" Type="Edm.String" Nullable="false" />
+        <Property Name="externalName" Type="Edm.String" Nullable="true" />
+        <Property Name="mdfSystemRecordStatus" Type="Edm.String" Nullable="true" />
+        <Property Name="effectiveStartDate" Type="Edm.DateTime" Nullable="false" />
+      </EntityType>
+      <EntityType Name="cust_RelocationCase">
+        <Property Name="externalCode" Type="Edm.String" Nullable="false" />
+        <Property Name="externalName" Type="Edm.String" Nullable="true" />
+        <Property Name="mdfSystemRecordStatus" Type="Edm.String" Nullable="true" />
+        <Property Name="effectiveStartDate" Type="Edm.DateTime" Nullable="false" />
+      </EntityType>
+      <EntityType Name="cust_SecondmentAgreement">
+        <Property Name="externalCode" Type="Edm.String" Nullable="false" />
+        <Property Name="externalName" Type="Edm.String" Nullable="true" />
+        <Property Name="mdfSystemRecordStatus" Type="Edm.String" Nullable="true" />
+      </EntityType>
+      <EntityType Name="cust_ExitChecklist">
+        <Property Name="externalCode" Type="Edm.String" Nullable="false" />
+        <Property Name="externalName" Type="Edm.String" Nullable="true" />
+        <Property Name="mdfSystemRecordStatus" Type="Edm.String" Nullable="true" />
+      </EntityType>
+      <EntityType Name="cust_LongServiceAward">
+        <Property Name="externalCode" Type="Edm.String" Nullable="false" />
+        <Property Name="externalName" Type="Edm.String" Nullable="true" />
+        <Property Name="mdfSystemRecordStatus" Type="Edm.String" Nullable="true" />
+      </EntityType>
+      <EntityType Name="cust_ParkingPermit">
+        <Property Name="externalCode" Type="Edm.String" Nullable="false" />
+        <Property Name="externalName" Type="Edm.String" Nullable="true" />
+        <Property Name="mdfSystemRecordStatus" Type="Edm.String" Nullable="true" />
+      </EntityType>
+      <EntityType Name="cust_FirstAider">
+        <Property Name="externalCode" Type="Edm.String" Nullable="false" />
+        <Property Name="externalName" Type="Edm.String" Nullable="true" />
+        <Property Name="mdfSystemRecordStatus" Type="Edm.String" Nullable="true" />
+      </EntityType>
+      <EntityType Name="FODepartment">
+        <Property Name="externalCode" Type="Edm.String" Nullable="false" />
+        <Property Name="name" Type="Edm.String" Nullable="true" />
+        <Property Name="effectiveStartDate" Type="Edm.DateTime" Nullable="false" />
+        <Property Name="effectiveStatus" Type="Edm.String" Nullable="true" />
+      </EntityType>
+      <EntityType Name="FOCostCenter">
+        <Property Name="externalCode" Type="Edm.String" Nullable="false" />
+        <Property Name="name" Type="Edm.String" Nullable="true" />
+        <Property Name="effectiveStartDate" Type="Edm.DateTime" Nullable="false" />
+      </EntityType>
+      <EntityType Name="FOJobCode">
+        <Property Name="externalCode" Type="Edm.String" Nullable="false" />
+        <Property Name="name" Type="Edm.String" Nullable="true" />
+        <Property Name="effectiveStartDate" Type="Edm.DateTime" Nullable="false" />
+      </EntityType>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>
