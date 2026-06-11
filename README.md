@@ -161,3 +161,15 @@ sf-config-debt-radar/
     test_core.py
   data/                       # Client evidence templates
 ```
+
+---
+
+## Part of the SF Compass Suite
+
+One of 10 free, open tools for SAP SuccessFactors consultants. Explore the full suite at [SF Compass](https://sahirvhora.github.io/sf-compass/).
+
+Related tools:
+
+- [Position Integrity Checker](https://github.com/SahirVhora/sf-position-integrity-checker) - Validate position data integrity
+- [Config Compare](https://github.com/SahirVhora/sf-config-compare) - Compare metadata and picklists across tenants
+- [ObjectSync](https://github.com/SahirVhora/SAPSF_ObjectSync) - Sync OM foundation objects PRD to Dev
