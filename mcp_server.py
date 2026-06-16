@@ -15,10 +15,8 @@ Usage:
 from __future__ import annotations
 
 import json
-import os
 import sys
 from pathlib import Path
-from typing import Any
 
 from mcp.server.fastmcp import FastMCP
 
@@ -28,20 +26,18 @@ if str(_project_root) not in sys.path:
     sys.path.insert(0, str(_project_root))
 
 from sf_config_debt_radar.auth import SFClient
-from sf_config_debt_radar.metadata import parse_metadata_xml, classify_ec_entities, metadata_summary, CORE_EC_ENTITIES
+from sf_config_debt_radar.metadata import classify_ec_entities, CORE_EC_ENTITIES
 from sf_config_debt_radar.scanner import (
     scan_metadata_xml,
     run_count_checks,
-    metadata_findings,
 )
-from sf_config_debt_radar.scoring import score_debt
-from sf_config_debt_radar.report import build_report_model, build_roadmap
+from sf_config_debt_radar.report import build_report_model
 
 # ── MCP Server Setup ──────────────────────────────────────────────────
 
 mcp = FastMCP(
     "SF Config Debt Scanner",
-    instructions="SAP SuccessFactors EC Configuration Debt Scanner — analyse metadata, detect config debt, score risk. Tools: sf_scan_metadata_xml (offline XML scan), sf_scan_tenant (live tenant scan), sf_test_connection (test credentials), sf_assessment_questions (guided questionnaire), sf_rate_findings (score finding sets).",
+    instructions="SAP SuccessFactors EC Configuration Debt Scanner - analyse metadata, detect config debt, score risk. Tools: sf_scan_metadata_xml (offline XML scan), sf_scan_tenant (live tenant scan), sf_test_connection (test credentials), sf_assessment_questions (guided questionnaire), sf_rate_findings (score finding sets).",
 )
 
 # ── Tool: Scan Metadata XML ───────────────────────────────────────────
@@ -49,7 +45,7 @@ mcp = FastMCP(
 
 @mcp.tool(
     name="sf_scan_metadata_xml",
-    description="Analyse SAP SuccessFactors $metadata XML text for configuration debt indicators. No tenant connection needed — paste raw XML metadata and get findings, classification, and debt score.",
+    description="Analyse SAP SuccessFactors $metadata XML text for configuration debt indicators. No tenant connection needed - paste raw XML metadata and get findings, classification, and debt score.",
 )
 def scan_metadata_xml_tool(
     xml_text: str,
@@ -152,7 +148,7 @@ def test_connection_tool(
 
 @mcp.tool(
     name="sf_scan_tenant",
-    description="Run a full EC configuration debt scan against a live SAP SuccessFactors tenant. Connects via OData v2, pulls $metadata, runs count checks (Tier 1), and returns findings with debt score and 90-day roadmap. Zero employee data stored — schema and counts only.",
+    description="Run a full EC configuration debt scan against a live SAP SuccessFactors tenant. Connects via OData v2, pulls $metadata, runs count checks (Tier 1), and returns findings with debt score and 90-day roadmap. Zero employee data stored - schema and counts only.",
 )
 def scan_tenant_tool(
     base_url: str,
@@ -254,7 +250,7 @@ def assessment_questions_tool(
     """Get guided assessment questions for SF EC configuration debt.
 
     Args:
-        category: Filter by area — 'governance', 'custom_fields', 'mdf', 'picklists',
+        category: Filter by area - 'governance', 'custom_fields', 'mdf', 'picklists',
                   'event_reasons', 'foundation', 'rules', or 'all' (default).
 
     Returns:
@@ -390,7 +386,7 @@ def main() -> None:
     """Run the MCP server on stdio (default) or SSE."""
     import argparse
 
-    parser = argparse.ArgumentParser(description="SF Config Debt Radar — MCP Server")
+    parser = argparse.ArgumentParser(description="SF Config Debt Radar - MCP Server")
     parser.add_argument(
         "--transport",
         choices=["stdio", "sse"],

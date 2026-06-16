@@ -18,8 +18,14 @@ PORT = int(sys.argv[2]) if len(sys.argv) > 2 and sys.argv[1] == "--port" else 50
 APP_DIR = Path(__file__).resolve().parent
 
 # Only allow proxy requests to known SAP SuccessFactors API hosts
-_ALLOWED_HOST_SUFFIXES = (".sapsf.com", ".sapsf.eu", ".sapsf.cn", ".sapsf.us",
-                          ".successfactors.com", ".successfactors.eu")
+_ALLOWED_HOST_SUFFIXES = (
+    ".sapsf.com",
+    ".sapsf.eu",
+    ".sapsf.cn",
+    ".sapsf.us",
+    ".successfactors.com",
+    ".successfactors.eu",
+)
 
 
 def _is_allowed_proxy_target(url: str) -> bool:
@@ -76,10 +82,12 @@ class Proxy(http.server.BaseHTTPRequestHandler):
                 req.add_header(header, val)
 
         ctx = ssl.create_default_context()
+
         # Disable redirect following to prevent open-redirect SSRF
         class NoRedirectHandler(urllib.request.HTTPRedirectHandler):
             def redirect_request(self, req, fp, code, msg, headers, newurl):
                 return None
+
         opener = urllib.request.build_opener(NoRedirectHandler)
         try:
             resp = opener.open(req, timeout=60)
