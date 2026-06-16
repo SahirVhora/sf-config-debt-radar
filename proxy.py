@@ -81,9 +81,10 @@ class Proxy(http.server.BaseHTTPRequestHandler):
             if val:
                 req.add_header(header, val)
 
-        ctx = ssl.create_default_context()
-
         # Disable redirect following to prevent open-redirect SSRF
+        # chains when the proxy target returns a 3xx response. Setting
+        # redirect_request to None tells urllib to surface the redirect
+        # rather than follow it.
         class NoRedirectHandler(urllib.request.HTTPRedirectHandler):
             def redirect_request(self, req, fp, code, msg, headers, newurl):
                 return None
