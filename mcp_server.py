@@ -25,13 +25,15 @@ _project_root = Path(__file__).resolve().parent
 if str(_project_root) not in sys.path:
     sys.path.insert(0, str(_project_root))
 
-from sf_config_debt_radar.auth import SFClient
-from sf_config_debt_radar.metadata import classify_ec_entities, CORE_EC_ENTITIES
-from sf_config_debt_radar.scanner import (
+# Imports below must follow the sys.path manipulation above so the package
+# can be located when this module is run directly (python mcp_server.py).
+from sf_config_debt_radar.auth import SFClient  # noqa: E402
+from sf_config_debt_radar.metadata import classify_ec_entities, CORE_EC_ENTITIES  # noqa: E402
+from sf_config_debt_radar.scanner import (  # noqa: E402
     scan_metadata_xml,
     run_count_checks,
 )
-from sf_config_debt_radar.report import build_report_model
+from sf_config_debt_radar.report import build_report_model  # noqa: E402
 
 # ── MCP Server Setup ──────────────────────────────────────────────────
 
