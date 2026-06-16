@@ -39,6 +39,8 @@ jobs:
           # Warnings (non-blocking)
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=120 --statistics
 
+      - name: Lint with ruff
+        run: pip install ruff && ruff check .
       - name: Run tests
         run: |
           pytest tests/ -v --tb=short || echo "No tests found or tests failed"
