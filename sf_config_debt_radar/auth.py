@@ -1,4 +1,11 @@
-"""Authentication helpers for SAP SuccessFactors OData v2."""
+"""Authentication helpers for SAP SuccessFactors OData v2.
+
+Auth logic is now delegated to the sapsf_shared SDK
+(sapsf_shared.auth.AuthConfig / build_requests_auth).
+
+The thin helpers below (build_basic_auth_header, derive_token_url) are kept
+for backward compatibility with existing tests and any external callers.
+"""
 
 from __future__ import annotations
 
@@ -12,6 +19,11 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
+from sapsf_shared.auth import AuthConfig, build_requests_auth
+
+
+# ── Thin compatibility helpers (keep existing test surface) ───────────────
+
 
 def build_basic_auth_header(username: str, password: str) -> str:
     token = base64.b64encode(f"{username}:{password}".encode("utf-8")).decode("ascii")
@@ -21,6 +33,9 @@ def build_basic_auth_header(username: str, password: str) -> str:
 def derive_token_url(base_url: str) -> str:
     parsed = urlparse(base_url.rstrip("/"))
     return f"{parsed.scheme}://{parsed.netloc}/oauth/token"
+
+
+# ── Internal session factory ──────────────────────────────────────────────
 
 
 def _session_with_retries() -> requests.Session:
@@ -39,8 +54,13 @@ def _session_with_retries() -> requests.Session:
     return session
 
 
+# ── OData client ──────────────────────────────────────────────────────────
+
+
 @dataclass
 class SFClient:
+    """Minimal OData v2 client.  Auth is handled via sapsf_shared.AuthConfig."""
+
     base_url: str
     auth_method: str = "basic"
     username: str = ""
@@ -54,25 +74,31 @@ class SFClient:
         self.base_url = self.base_url.rstrip("/")
         self.session = _session_with_retries()
         self._token_expiry = 0.0
-        if self.auth_method == "basic":
-            if not self.username or not self.password:
-                raise ValueError("username and password are required for basic auth")
-            self.session.headers.update(
-                {
-                    "Authorization": build_basic_auth_header(
-                        self.username, self.password
-                    ),
-                    "Accept": "application/json",
-                }
-            )
-        elif self.auth_method == "oauth2":
-            if not self.client_id or not self.client_secret:
-                raise ValueError("client_id and client_secret are required for oauth2")
-            if not self.token_url:
-                self.token_url = derive_token_url(self.base_url)
-            self.refresh_token()
-        else:
-            raise ValueError(f"unsupported auth_method: {self.auth_method}")
+
+        # Map local fields onto the shared AuthConfig.
+        # Note: local uses auth_method; SDK uses auth_type - same values.
+        auth_cfg = AuthConfig(
+            base_url=self.base_url,
+            auth_type=self.auth_method,
+            username=self.username,
+            password=self.password,
+            client_id=self.client_id,
+            client_secret=self.client_secret,
+            company_id=self.company_id,
+            token_url=self.token_url or "",
+        )
+        auth_cfg.validate()
+        self._auth_cfg = auth_cfg
+
+        auth_obj, cert = build_requests_auth(auth_cfg)
+        self.session.auth = auth_obj
+        if cert:
+            self.session.cert = cert
+        self.session.headers.update({"Accept": "application/json"})
+
+        # Pre-record expiry for oauth2 so ensure_token works
+        if self.auth_method == "oauth2":
+            self._token_expiry = time.time() + 3540  # 59 min optimistic default
 
     @classmethod
     def from_config(cls, config: dict[str, Any]) -> "SFClient":
@@ -89,23 +115,12 @@ class SFClient:
         )
 
     def refresh_token(self) -> None:
-        response = requests.post(
-            self.token_url,
-            data={
-                "grant_type": "client_credentials",
-                "client_id": self.client_id,
-                "client_secret": self.client_secret,
-                "company_id": self.company_id,
-            },
-            timeout=30,
-        )
-        response.raise_for_status()
-        payload = response.json()
-        token = payload["access_token"]
-        self._token_expiry = time.time() + int(payload.get("expires_in", 3600)) - 60
-        self.session.headers.update(
-            {"Authorization": f"Bearer {token}", "Accept": "application/json"}
-        )
+        """Re-fetch an OAuth2 token and update the session."""
+        from sapsf_shared.auth import OAuth2Auth, _BearerAuth  # type: ignore[attr-defined]
+
+        token = OAuth2Auth.fetch_token(self._auth_cfg, force_refresh=True)
+        self.session.auth = _BearerAuth(token)
+        self._token_expiry = time.time() + 3540
 
     def ensure_token(self) -> None:
         if self.auth_method == "oauth2" and time.time() >= self._token_expiry:
