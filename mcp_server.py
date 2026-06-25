@@ -396,7 +396,7 @@ def main() -> None:
         help="Transport protocol (default: stdio for AI agent integration)",
     )
     parser.add_argument("--port", type=int, default=8090, help="Port for SSE transport (default: 8090)")
-    parser.add_argument("--host", default="0.0.0.0", help="Host for SSE transport (default: 0.0.0.0)")
+    parser.add_argument("--host", default="127.0.0.1", help="Host for SSE transport (default: 127.0.0.1)")
     args = parser.parse_args()
 
     if args.transport == "sse":
