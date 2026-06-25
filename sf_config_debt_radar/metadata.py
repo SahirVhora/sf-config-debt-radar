@@ -6,6 +6,8 @@ import re
 import xml.etree.ElementTree as ET
 from typing import Any
 
+from defusedxml.ElementTree import fromstring as _safe_fromstring
+
 CORE_EC_ENTITIES = {
     "EmpJob",
     "EmpEmployment",
@@ -95,7 +97,7 @@ def is_enabled_custom_field(
 
 
 def parse_metadata_xml(xml_text: str) -> dict[str, dict[str, Any]]:
-    root = ET.fromstring(xml_text)
+    root = _safe_fromstring(xml_text)
     entities: dict[str, dict[str, Any]] = {}
     for element in root.iter():
         if not (element.tag.endswith("}EntityType") or element.tag == "EntityType"):
