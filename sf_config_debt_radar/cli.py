@@ -15,7 +15,7 @@ from .scanner import pull_and_scan_metadata, run_count_checks, scan_metadata_xml
 
 
 def load_config(path: str | Path) -> dict[str, Any]:
-    with open(path, "r", encoding="utf-8") as handle:
+    with open(path, encoding="utf-8") as handle:
         return yaml.safe_load(handle) or {}
 
 

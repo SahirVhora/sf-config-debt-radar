@@ -28,12 +28,12 @@ if str(_project_root) not in sys.path:
 # Imports below must follow the sys.path manipulation above so the package
 # can be located when this module is run directly (python mcp_server.py).
 from sf_config_debt_radar.auth import SFClient  # noqa: E402
-from sf_config_debt_radar.metadata import classify_ec_entities, CORE_EC_ENTITIES  # noqa: E402
-from sf_config_debt_radar.scanner import (  # noqa: E402
-    scan_metadata_xml,
-    run_count_checks,
-)
+from sf_config_debt_radar.metadata import CORE_EC_ENTITIES, classify_ec_entities  # noqa: E402
 from sf_config_debt_radar.report import build_report_model  # noqa: E402
+from sf_config_debt_radar.scanner import (  # noqa: E402
+    run_count_checks,
+    scan_metadata_xml,
+)
 
 # ── MCP Server Setup ──────────────────────────────────────────────────
 
@@ -75,16 +75,20 @@ def scan_metadata_xml_tool(
     }
     result = scan_metadata_xml(xml_text, config)
     report = build_report_model(result["summary"], result["findings"])
-    return json.dumps({
-        "summary": report["summary"],
-        "score": report["score"],
-        "findings": report["findings"],
-        "roadmap": report["roadmap"],
-        "classified": {
-            name: list(entities.keys())
-            for name, entities in classify_ec_entities(result["entities"]).items()
+    return json.dumps(
+        {
+            "summary": report["summary"],
+            "score": report["score"],
+            "findings": report["findings"],
+            "roadmap": report["roadmap"],
+            "classified": {
+                name: list(entities.keys())
+                for name, entities in classify_ec_entities(result["entities"]).items()
+            },
         },
-    }, indent=2, default=str)
+        indent=2,
+        default=str,
+    )
 
 
 # ── Tool: Test Connection ─────────────────────────────────────────────
@@ -136,11 +140,14 @@ def test_connection_tool(
             count = client.count(entity)
             if count is not None:
                 entity_counts[entity] = count
-        return json.dumps({
-            "success": ok,
-            "message": message,
-            "entity_counts": entity_counts,
-        }, indent=2)
+        return json.dumps(
+            {
+                "success": ok,
+                "message": message,
+                "entity_counts": entity_counts,
+            },
+            indent=2,
+        )
     except Exception as e:
         return json.dumps({"success": False, "error": str(e)}, indent=2)
 
@@ -202,7 +209,10 @@ def scan_tenant_tool(
         )
         ok, test_message = client.test_connection()
         if not ok:
-            return json.dumps({"success": False, "error": f"Connection failed: {test_message}"}, indent=2)
+            return json.dumps(
+                {"success": False, "error": f"Connection failed: {test_message}"},
+                indent=2,
+            )
 
         config = {
             "thresholds": {
@@ -219,6 +229,7 @@ def scan_tenant_tool(
 
         # Pull and scan metadata
         from sf_config_debt_radar.scanner import pull_and_scan_metadata
+
         result = pull_and_scan_metadata(client, config)
 
         # Tier 1 count checks
@@ -227,14 +238,18 @@ def scan_tenant_tool(
             findings.extend(run_count_checks(client, result, config))
 
         report = build_report_model(result["summary"], findings)
-        return json.dumps({
-            "success": True,
-            "connection": test_message,
-            "summary": report["summary"],
-            "score": report["score"],
-            "findings": report["findings"],
-            "roadmap": report["roadmap"],
-        }, indent=2, default=str)
+        return json.dumps(
+            {
+                "success": True,
+                "connection": test_message,
+                "summary": report["summary"],
+                "score": report["score"],
+                "findings": report["findings"],
+                "roadmap": report["roadmap"],
+            },
+            indent=2,
+            default=str,
+        )
     except Exception as e:
         return json.dumps({"success": False, "error": str(e)}, indent=2, default=str)
 
@@ -267,40 +282,244 @@ def assessment_questions_tool(
 def _assessment_db() -> list[dict[str, str]]:
     """Return the full assessment question set."""
     return [
-        {"id": "GOV-01", "category": "governance", "question": "Do you have a documented configuration governance process for EC?", "severity": "HIGH", "rationale": "Without governance, config debt accumulates silently."},
-        {"id": "GOV-02", "category": "governance", "question": "Is there a named owner per EC module (job, comp, org, personal)?", "severity": "MEDIUM", "rationale": "Orphaned config has no accountability."},
-        {"id": "GOV-03", "category": "governance", "question": "Do you review custom fields quarterly for usage and retirement?", "severity": "HIGH", "rationale": "Unused custom fields add complexity and testing cost."},
-        {"id": "GOV-04", "category": "governance", "question": "Is there a change advisory board or approval process for EC config changes?", "severity": "MEDIUM", "rationale": "Uncontrolled changes introduce risk."},
-        {"id": "GOV-05", "category": "governance", "question": "Do you maintain a design decision register for EC?", "severity": "LOW", "rationale": "Tribal knowledge about why config exists is a risk."},
-        {"id": "GOV-06", "category": "governance", "question": "Are your EC integrations documented with field mappings and payload samples?", "severity": "HIGH", "rationale": "Undocumented integrations are fragile and hard to test."},
-        {"id": "GOV-07", "category": "governance", "question": "Do you have a testing strategy for EC release updates?", "severity": "HIGH", "rationale": "Release updates can break config silently."},
-        {"id": "GOV-08", "category": "governance", "question": "Is there a process to review and clean up deprecated event reasons?", "severity": "MEDIUM", "rationale": "Unused event reasons create reporting noise and confusion."},
-        {"id": "CF-01", "category": "custom_fields", "question": "How many custom fields exist across EC objects?", "severity": "MEDIUM", "rationale": "High custom field counts increase complexity."},
-        {"id": "CF-02", "category": "custom_fields", "question": "Do you know which custom fields are unused/always blank?", "severity": "HIGH", "rationale": "Blank custom fields waste UI space and integration payloads."},
-        {"id": "CF-03", "category": "custom_fields", "question": "Do you have a naming convention for custom fields?", "severity": "LOW", "rationale": "Inconsistent naming makes maintenance harder."},
-        {"id": "CF-04", "category": "custom_fields", "question": "Are custom fields documented with business purpose and owner?", "severity": "MEDIUM", "rationale": "Unknown custom fields become untouchable over time."},
-        {"id": "CF-05", "category": "custom_fields", "question": "Do you track which custom fields are used in reports, integrations, or business rules?", "severity": "HIGH", "rationale": "Field dependency awareness prevents breaking changes."},
-        {"id": "MDF-01", "category": "mdf", "question": "How many custom MDF objects exist in your tenant?", "severity": "MEDIUM", "rationale": "Excessive custom MDF objects indicate process gaps."},
-        {"id": "MDF-02", "category": "mdf", "question": "Do your custom MDF objects use effective dating for historical tracking?", "severity": "HIGH", "rationale": "Non-effective-dated objects cannot track history properly."},
-        {"id": "MDF-03", "category": "mdf", "question": "Are custom MDF objects documented with purpose and owner?", "severity": "MEDIUM", "rationale": "Undocumented custom MDF objects accumulate over time."},
-        {"id": "MDF-04", "category": "mdf", "question": "Do you use standard objects before adding custom MDF?", "severity": "MEDIUM", "rationale": "Custom objects bypass standard functionality and upgrade paths."},
-        {"id": "PL-01", "category": "picklists", "question": "Do you review picklists for duplicate or unused values?", "severity": "MEDIUM", "rationale": "Picklist drift causes integration and reporting issues."},
-        {"id": "PL-02", "category": "picklists", "question": "Are global picklists used consistently across countries?", "severity": "HIGH", "rationale": "Inconsistent picklist use across countries creates integration complexity."},
-        {"id": "PL-03", "category": "picklists", "question": "Do you maintain translations for picklist values?", "severity": "LOW", "rationale": "Missing translations affect employee experience."},
-        {"id": "PL-04", "category": "picklists", "question": "Do you have a process to deprecate and clean old picklist values?", "severity": "MEDIUM", "rationale": "Stale picklist values add noise to integrations and reporting."},
-        {"id": "ER-01", "category": "event_reasons", "question": "Are your EC event reasons standardised across countries?", "severity": "HIGH", "rationale": "Event reason variance causes reporting and process inconsistency."},
-        {"id": "ER-02", "category": "event_reasons", "question": "Do you have event reasons that are never used?", "severity": "MEDIUM", "rationale": "Unused event reasons create noise and confusion."},
-        {"id": "ER-03", "category": "event_reasons", "question": "Do you have a naming convention for event reasons?", "severity": "LOW", "rationale": "Inconsistent naming makes governance harder."},
-        {"id": "ER-04", "category": "event_reasons", "question": "Are event reasons mapped correctly to trigger events?", "severity": "HIGH", "rationale": "Wrong event mapping breaks workflows, reporting, and payroll."},
-        {"id": "FO-01", "category": "foundation", "question": "Do you regularly audit foundation objects for inactive or duplicate values?", "severity": "HIGH", "rationale": "Inactive or duplicate foundation objects cause processing errors downstream."},
-        {"id": "FO-02", "category": "foundation", "question": "Is your position management hierarchy accurate and maintained?", "severity": "HIGH", "rationale": "Position hierarchy errors affect workflow routing and reporting."},
-        {"id": "FO-03", "category": "foundation", "question": "Do you have a governance process for creating new foundation objects?", "severity": "MEDIUM", "rationale": "Uncontrolled foundation object creation leads to sprawl."},
-        {"id": "FO-04", "category": "foundation", "question": "Are foundation objects cross-referenced correctly (department to division, position to job code)?", "severity": "HIGH", "rationale": "Cross-entity misalignments break reporting and integrations."},
-        {"id": "BR-01", "category": "rules", "question": "Do you have duplicate or overlapping business rules?", "severity": "CRITICAL", "rationale": "Overlapping rules cause unpredictable field behaviour."},
-        {"id": "BR-02", "category": "rules", "question": "Are your business rules documented with purpose and expected behaviour?", "severity": "HIGH", "rationale": "Undocumented rules are hard to maintain and test."},
-        {"id": "BR-03", "category": "rules", "question": "Is there a process to test business rules before activating?", "severity": "HIGH", "rationale": "Untested rules cause production issues."},
-        {"id": "BR-04", "category": "rules", "question": "Do you have business rules that fire on the same event and touch the same field?", "severity": "CRITICAL", "rationale": "Contending rules cause unpredictable behaviour depending on execution order."},
-        {"id": "BR-05", "category": "rules", "question": "Are your business rules using country/entity guards appropriately?", "severity": "HIGH", "rationale": "Rules without proper scope affect unintended populations."},
+        {
+            "id": "GOV-01",
+            "category": "governance",
+            "question": "Do you have a documented configuration governance process for EC?",
+            "severity": "HIGH",
+            "rationale": "Without governance, config debt accumulates silently.",
+        },
+        {
+            "id": "GOV-02",
+            "category": "governance",
+            "question": "Is there a named owner per EC module (job, comp, org, personal)?",
+            "severity": "MEDIUM",
+            "rationale": "Orphaned config has no accountability.",
+        },
+        {
+            "id": "GOV-03",
+            "category": "governance",
+            "question": "Do you review custom fields quarterly for usage and retirement?",
+            "severity": "HIGH",
+            "rationale": "Unused custom fields add complexity and testing cost.",
+        },
+        {
+            "id": "GOV-04",
+            "category": "governance",
+            "question": "Is there a change advisory board or approval process for EC config changes?",
+            "severity": "MEDIUM",
+            "rationale": "Uncontrolled changes introduce risk.",
+        },
+        {
+            "id": "GOV-05",
+            "category": "governance",
+            "question": "Do you maintain a design decision register for EC?",
+            "severity": "LOW",
+            "rationale": "Tribal knowledge about why config exists is a risk.",
+        },
+        {
+            "id": "GOV-06",
+            "category": "governance",
+            "question": "Are your EC integrations documented with field mappings and payload samples?",
+            "severity": "HIGH",
+            "rationale": "Undocumented integrations are fragile and hard to test.",
+        },
+        {
+            "id": "GOV-07",
+            "category": "governance",
+            "question": "Do you have a testing strategy for EC release updates?",
+            "severity": "HIGH",
+            "rationale": "Release updates can break config silently.",
+        },
+        {
+            "id": "GOV-08",
+            "category": "governance",
+            "question": "Is there a process to review and clean up deprecated event reasons?",
+            "severity": "MEDIUM",
+            "rationale": "Unused event reasons create reporting noise and confusion.",
+        },
+        {
+            "id": "CF-01",
+            "category": "custom_fields",
+            "question": "How many custom fields exist across EC objects?",
+            "severity": "MEDIUM",
+            "rationale": "High custom field counts increase complexity.",
+        },
+        {
+            "id": "CF-02",
+            "category": "custom_fields",
+            "question": "Do you know which custom fields are unused/always blank?",
+            "severity": "HIGH",
+            "rationale": "Blank custom fields waste UI space and integration payloads.",
+        },
+        {
+            "id": "CF-03",
+            "category": "custom_fields",
+            "question": "Do you have a naming convention for custom fields?",
+            "severity": "LOW",
+            "rationale": "Inconsistent naming makes maintenance harder.",
+        },
+        {
+            "id": "CF-04",
+            "category": "custom_fields",
+            "question": "Are custom fields documented with business purpose and owner?",
+            "severity": "MEDIUM",
+            "rationale": "Unknown custom fields become untouchable over time.",
+        },
+        {
+            "id": "CF-05",
+            "category": "custom_fields",
+            "question": "Do you track which custom fields are used in reports, integrations, or business rules?",
+            "severity": "HIGH",
+            "rationale": "Field dependency awareness prevents breaking changes.",
+        },
+        {
+            "id": "MDF-01",
+            "category": "mdf",
+            "question": "How many custom MDF objects exist in your tenant?",
+            "severity": "MEDIUM",
+            "rationale": "Excessive custom MDF objects indicate process gaps.",
+        },
+        {
+            "id": "MDF-02",
+            "category": "mdf",
+            "question": "Do your custom MDF objects use effective dating for historical tracking?",
+            "severity": "HIGH",
+            "rationale": "Non-effective-dated objects cannot track history properly.",
+        },
+        {
+            "id": "MDF-03",
+            "category": "mdf",
+            "question": "Are custom MDF objects documented with purpose and owner?",
+            "severity": "MEDIUM",
+            "rationale": "Undocumented custom MDF objects accumulate over time.",
+        },
+        {
+            "id": "MDF-04",
+            "category": "mdf",
+            "question": "Do you use standard objects before adding custom MDF?",
+            "severity": "MEDIUM",
+            "rationale": "Custom objects bypass standard functionality and upgrade paths.",
+        },
+        {
+            "id": "PL-01",
+            "category": "picklists",
+            "question": "Do you review picklists for duplicate or unused values?",
+            "severity": "MEDIUM",
+            "rationale": "Picklist drift causes integration and reporting issues.",
+        },
+        {
+            "id": "PL-02",
+            "category": "picklists",
+            "question": "Are global picklists used consistently across countries?",
+            "severity": "HIGH",
+            "rationale": "Inconsistent picklist use across countries creates integration complexity.",
+        },
+        {
+            "id": "PL-03",
+            "category": "picklists",
+            "question": "Do you maintain translations for picklist values?",
+            "severity": "LOW",
+            "rationale": "Missing translations affect employee experience.",
+        },
+        {
+            "id": "PL-04",
+            "category": "picklists",
+            "question": "Do you have a process to deprecate and clean old picklist values?",
+            "severity": "MEDIUM",
+            "rationale": "Stale picklist values add noise to integrations and reporting.",
+        },
+        {
+            "id": "ER-01",
+            "category": "event_reasons",
+            "question": "Are your EC event reasons standardised across countries?",
+            "severity": "HIGH",
+            "rationale": "Event reason variance causes reporting and process inconsistency.",
+        },
+        {
+            "id": "ER-02",
+            "category": "event_reasons",
+            "question": "Do you have event reasons that are never used?",
+            "severity": "MEDIUM",
+            "rationale": "Unused event reasons create noise and confusion.",
+        },
+        {
+            "id": "ER-03",
+            "category": "event_reasons",
+            "question": "Do you have a naming convention for event reasons?",
+            "severity": "LOW",
+            "rationale": "Inconsistent naming makes governance harder.",
+        },
+        {
+            "id": "ER-04",
+            "category": "event_reasons",
+            "question": "Are event reasons mapped correctly to trigger events?",
+            "severity": "HIGH",
+            "rationale": "Wrong event mapping breaks workflows, reporting, and payroll.",
+        },
+        {
+            "id": "FO-01",
+            "category": "foundation",
+            "question": "Do you regularly audit foundation objects for inactive or duplicate values?",
+            "severity": "HIGH",
+            "rationale": "Inactive or duplicate foundation objects cause processing errors downstream.",
+        },
+        {
+            "id": "FO-02",
+            "category": "foundation",
+            "question": "Is your position management hierarchy accurate and maintained?",
+            "severity": "HIGH",
+            "rationale": "Position hierarchy errors affect workflow routing and reporting.",
+        },
+        {
+            "id": "FO-03",
+            "category": "foundation",
+            "question": "Do you have a governance process for creating new foundation objects?",
+            "severity": "MEDIUM",
+            "rationale": "Uncontrolled foundation object creation leads to sprawl.",
+        },
+        {
+            "id": "FO-04",
+            "category": "foundation",
+            "question": "Are foundation objects cross-referenced correctly (department to division, position to job code)?",
+            "severity": "HIGH",
+            "rationale": "Cross-entity misalignments break reporting and integrations.",
+        },
+        {
+            "id": "BR-01",
+            "category": "rules",
+            "question": "Do you have duplicate or overlapping business rules?",
+            "severity": "CRITICAL",
+            "rationale": "Overlapping rules cause unpredictable field behaviour.",
+        },
+        {
+            "id": "BR-02",
+            "category": "rules",
+            "question": "Are your business rules documented with purpose and expected behaviour?",
+            "severity": "HIGH",
+            "rationale": "Undocumented rules are hard to maintain and test.",
+        },
+        {
+            "id": "BR-03",
+            "category": "rules",
+            "question": "Is there a process to test business rules before activating?",
+            "severity": "HIGH",
+            "rationale": "Untested rules cause production issues.",
+        },
+        {
+            "id": "BR-04",
+            "category": "rules",
+            "question": "Do you have business rules that fire on the same event and touch the same field?",
+            "severity": "CRITICAL",
+            "rationale": "Contending rules cause unpredictable behaviour depending on execution order.",
+        },
+        {
+            "id": "BR-05",
+            "category": "rules",
+            "question": "Are your business rules using country/entity guards appropriately?",
+            "severity": "HIGH",
+            "rationale": "Rules without proper scope affect unintended populations.",
+        },
     ]
 
 
@@ -327,11 +546,14 @@ def rate_findings_tool(findings_json: str) -> str:
         if not isinstance(findings, list):
             findings = [findings]
         report = build_report_model({"entity_count": 0}, findings)
-        return json.dumps({
-            "score": report["score"],
-            "roadmap": report["roadmap"],
-            "finding_count": len(findings),
-        }, indent=2)
+        return json.dumps(
+            {
+                "score": report["score"],
+                "roadmap": report["roadmap"],
+                "finding_count": len(findings),
+            },
+            indent=2,
+        )
     except json.JSONDecodeError as e:
         return json.dumps({"error": f"Invalid JSON: {e}"}, indent=2)
 
@@ -345,12 +567,15 @@ def rate_findings_tool(findings_json: str) -> str:
 )
 def known_ec_entities_tool() -> str:
     """Return the set of known EC, foundation, and custom entity patterns used in scanning."""
-    return json.dumps({
-        "core_ec_entities": sorted(CORE_EC_ENTITIES),
-        "foundation_entity_prefixes": ["FO"],
-        "core_entity_prefixes": ["Emp", "Per"],
-        "custom_patterns": ["cust_", "custom_"],
-    }, indent=2)
+    return json.dumps(
+        {
+            "core_ec_entities": sorted(CORE_EC_ENTITIES),
+            "foundation_entity_prefixes": ["FO"],
+            "core_entity_prefixes": ["Emp", "Per"],
+            "custom_patterns": ["cust_", "custom_"],
+        },
+        indent=2,
+    )
 
 
 # ── Tool: About ───────────────────────────────────────────────────────
@@ -362,27 +587,31 @@ def known_ec_entities_tool() -> str:
 )
 def about_tool() -> str:
     """Return metadata about this MCP server."""
-    return json.dumps({
-        "name": "SF Config Debt Scanner (MCP)",
-        "version": "1.0.0",
-        "description": "MCP server wrapping the SAP SuccessFactors EC Configuration Debt Radar",
-        "project": "sf-config-debt-radar",
-        "project_path": str(_project_root),
-        "tools": [
-            "sf_scan_metadata_xml",
-            "sf_test_connection",
-            "sf_scan_tenant",
-            "sf_assessment_questions",
-            "sf_rate_findings",
-            "sf_known_ec_entities",
-            "sf_about",
-        ],
-        "auth_methods": ["basic", "oauth2"],
-        "data_policy": "Zero employee data stored. Schema, counts, and non-identifiable metadata only.",
-    }, indent=2)
+    return json.dumps(
+        {
+            "name": "SF Config Debt Scanner (MCP)",
+            "version": "1.0.0",
+            "description": "MCP server wrapping the SAP SuccessFactors EC Configuration Debt Radar",
+            "project": "sf-config-debt-radar",
+            "project_path": str(_project_root),
+            "tools": [
+                "sf_scan_metadata_xml",
+                "sf_test_connection",
+                "sf_scan_tenant",
+                "sf_assessment_questions",
+                "sf_rate_findings",
+                "sf_known_ec_entities",
+                "sf_about",
+            ],
+            "auth_methods": ["basic", "oauth2"],
+            "data_policy": "Zero employee data stored. Schema, counts, and non-identifiable metadata only.",
+        },
+        indent=2,
+    )
 
 
 # ── Entry Point ───────────────────────────────────────────────────────
+
 
 def main() -> None:
     """Run the MCP server on stdio (default) or SSE."""
@@ -395,12 +624,21 @@ def main() -> None:
         default="stdio",
         help="Transport protocol (default: stdio for AI agent integration)",
     )
-    parser.add_argument("--port", type=int, default=8090, help="Port for SSE transport (default: 8090)")
-    parser.add_argument("--host", default="127.0.0.1", help="Host for SSE transport (default: 127.0.0.1)")
+    parser.add_argument(
+        "--port", type=int, default=8090, help="Port for SSE transport (default: 8090)"
+    )
+    parser.add_argument(
+        "--host",
+        default="127.0.0.1",
+        help="Host for SSE transport (default: 127.0.0.1)",
+    )
     args = parser.parse_args()
 
     if args.transport == "sse":
-        print(f"Starting SF Config Debt Scanner MCP server on http://{args.host}:{args.port}/mcp", file=sys.stderr)
+        print(
+            f"Starting SF Config Debt Scanner MCP server on http://{args.host}:{args.port}/mcp",
+            file=sys.stderr,
+        )
         mcp.run(transport="sse", host=args.host, port=args.port)
     else:
         # Stdio is the default for local AI agent integration

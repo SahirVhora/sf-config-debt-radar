@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import html
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 from .scoring import score_debt
@@ -15,7 +15,7 @@ def build_report_model(
 ) -> dict[str, Any]:
     score = score_debt(findings)
     return {
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "summary": metadata_summary,
         "score": score,
         "findings": sorted(
@@ -72,7 +72,7 @@ def action_text(finding: dict[str, Any]) -> str:
 def render_html_report(report: dict[str, Any]) -> str:
     score = report["score"]
     findings_rows = "\n".join(
-        f"<tr><td>{html.escape(str(f.get('severity','')))}</td><td>{html.escape(str(f.get('area','')))}</td><td>{html.escape(str(f.get('title','')))}</td><td>{html.escape(str(f.get('detail','')))}</td></tr>"
+        f"<tr><td>{html.escape(str(f.get('severity', '')))}</td><td>{html.escape(str(f.get('area', '')))}</td><td>{html.escape(str(f.get('title', '')))}</td><td>{html.escape(str(f.get('detail', '')))}</td></tr>"
         for f in report["findings"]
     )
     area_rows = "\n".join(
@@ -108,8 +108,8 @@ pre{{white-space:pre-wrap;background:#050506;border:1px solid #222;padding:16px;
 <body><main>
 <h1>SF Config Debt Radar</h1>
 <p class="badge">EC-only configuration debt assessment</p>
-<div class="card"><h2>Executive Summary</h2><div class="score">{score['overall_score']}</div><p>Risk level: <strong>{html.escape(score['risk_level'])}</strong></p><p>This report measures hidden configuration debt across EC metadata, custom fields, foundation objects, picklists, event reasons, and governance signals. It stores findings, counts, and schema only.</p></div>
-<div class="grid"><div class="card"><h2>Entities</h2><p>{report['summary'].get('entity_count',0)}</p></div><div class="card"><h2>EC Entities</h2><p>{report['summary'].get('ec_entity_count',0)}</p></div><div class="card"><h2>Custom MDF</h2><p>{report['summary'].get('custom_mdf_count',0)}</p></div><div class="card"><h2>Findings</h2><p>{len(report['findings'])}</p></div></div>
+<div class="card"><h2>Executive Summary</h2><div class="score">{score["overall_score"]}</div><p>Risk level: <strong>{html.escape(score["risk_level"])}</strong></p><p>This report measures hidden configuration debt across EC metadata, custom fields, foundation objects, picklists, event reasons, and governance signals. It stores findings, counts, and schema only.</p></div>
+<div class="grid"><div class="card"><h2>Entities</h2><p>{report["summary"].get("entity_count", 0)}</p></div><div class="card"><h2>EC Entities</h2><p>{report["summary"].get("ec_entity_count", 0)}</p></div><div class="card"><h2>Custom MDF</h2><p>{report["summary"].get("custom_mdf_count", 0)}</p></div><div class="card"><h2>Findings</h2><p>{len(report["findings"])}</p></div></div>
 <div class="card"><h2>Area Scores</h2><table><thead><tr><th>Area</th><th>Score</th></tr></thead><tbody>{area_rows}</tbody></table></div>
 <div class="card"><h2>Findings</h2><table><thead><tr><th>Severity</th><th>Area</th><th>Finding</th><th>Detail</th></tr></thead><tbody>{findings_rows}</tbody></table></div>
 <div class="card"><h2>90-Day Roadmap</h2>{roadmap}</div>

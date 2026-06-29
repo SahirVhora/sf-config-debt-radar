@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 from .auth import SFClient
@@ -22,7 +22,7 @@ def scan_metadata_xml(
     findings = metadata_findings(entities, config)
     return {
         "scan_type": "metadata",
-        "scanned_at": datetime.now(timezone.utc).isoformat(),
+        "scanned_at": datetime.now(UTC).isoformat(),
         "summary": metadata_summary(entities),
         "entities": entities,
         "classified": classify_ec_entities(entities),

@@ -7,9 +7,9 @@ Then tick "Use local proxy". Do not paste the localhost proxy URL into Base URL.
 """
 
 import http.server
-import urllib.request
-import urllib.error
 import sys
+import urllib.error
+import urllib.request
 from pathlib import Path
 from urllib.parse import urlparse
 

@@ -2,10 +2,11 @@
 """Generate the SF Config Debt Scanner Integration Guide as a Word document."""
 
 import os
+
 from docx import Document
-from docx.shared import Pt, RGBColor
-from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.table import WD_TABLE_ALIGNMENT
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.shared import Pt, RGBColor
 
 doc = Document()
 
@@ -115,8 +116,10 @@ doc.add_paragraph(
 p = doc.add_paragraph()
 run = p.add_run("Key point: ")
 run.bold = True
-p.add_run("If you know how to use one MCP tool, you know how to use them all. "
-           "The integration process is identical for every MCP server.")
+p.add_run(
+    "If you know how to use one MCP tool, you know how to use them all. "
+    "The integration process is identical for every MCP server."
+)
 
 # ---------- Section 3 ----------
 doc.add_heading("Why This Matters for SAP SuccessFactors", level=1)
@@ -151,7 +154,9 @@ doc.add_paragraph(
     "only metadata and record counts - not employee data."
 )
 
-doc.add_paragraph("It can do the following tasks, accessible through any MCP-compatible AI agent:")
+doc.add_paragraph(
+    "It can do the following tasks, accessible through any MCP-compatible AI agent:"
+)
 
 table = doc.add_table(rows=8, cols=2)
 table.style = "Light Grid Accent 1"
@@ -165,12 +170,30 @@ for i, h in enumerate(["Tool / Task", "What It Does"]):
             run.bold = True
 
 tools_data = [
-    ("Scan Metadata XML", "Analyse raw $metadata XML for config debt indicators - no tenant connection needed. Upload or paste your metadata XML and get a full report."),
-    ("Test Connection", "Check if an SF tenant is reachable via OData v2. Returns connectivity status and record counts for core entities (EmpJob, User, Position, etc.)."),
-    ("Full Tenant Scan", "Connect to a live SF tenant, pull the $metadata, run schema analysis and Tier 1 count checks, and return a config debt score with a 90-day remediation roadmap."),
-    ("Assessment Questions", "Generate guided configuration debt assessment questions across 7 categories: governance, custom fields, MDF, picklists, event reasons, foundation objects, and business rules."),
-    ("Rate Findings", "Score a set of custom findings and get an overall debt score with area breakdown and priority-ranked next steps."),
-    ("Known Entities", "List the EC entity names the scanner recognises for classification purposes."),
+    (
+        "Scan Metadata XML",
+        "Analyse raw $metadata XML for config debt indicators - no tenant connection needed. Upload or paste your metadata XML and get a full report.",
+    ),
+    (
+        "Test Connection",
+        "Check if an SF tenant is reachable via OData v2. Returns connectivity status and record counts for core entities (EmpJob, User, Position, etc.).",
+    ),
+    (
+        "Full Tenant Scan",
+        "Connect to a live SF tenant, pull the $metadata, run schema analysis and Tier 1 count checks, and return a config debt score with a 90-day remediation roadmap.",
+    ),
+    (
+        "Assessment Questions",
+        "Generate guided configuration debt assessment questions across 7 categories: governance, custom fields, MDF, picklists, event reasons, foundation objects, and business rules.",
+    ),
+    (
+        "Rate Findings",
+        "Score a set of custom findings and get an overall debt score with area breakdown and priority-ranked next steps.",
+    ),
+    (
+        "Known Entities",
+        "List the EC entity names the scanner recognises for classification purposes.",
+    ),
     ("About", "Get server version, available tools list, and data policy information."),
 ]
 for row_idx, (tool, desc) in enumerate(tools_data, start=1):
@@ -188,10 +211,22 @@ doc.add_paragraph(
 )
 
 platforms = [
-    ("Hermes Agent", "A terminal-based AI assistant by Nous Research. Best for technical users comfortable with a command line. Free and open-source."),
-    ("Claude Code", "Anthropic's AI coding assistant that runs in the terminal. Available via subscription."),
-    ("Cursor", "An AI code editor with built-in MCP support. More visual than terminal-based agents."),
-    ("VS Code + Extensions", "Microsoft's code editor with MCP plugin support. Familiar interface for those already using VS Code for XML/JSON editing."),
+    (
+        "Hermes Agent",
+        "A terminal-based AI assistant by Nous Research. Best for technical users comfortable with a command line. Free and open-source.",
+    ),
+    (
+        "Claude Code",
+        "Anthropic's AI coding assistant that runs in the terminal. Available via subscription.",
+    ),
+    (
+        "Cursor",
+        "An AI code editor with built-in MCP support. More visual than terminal-based agents.",
+    ),
+    (
+        "VS Code + Extensions",
+        "Microsoft's code editor with MCP plugin support. Familiar interface for those already using VS Code for XML/JSON editing.",
+    ),
 ]
 
 for i, (name, desc) in enumerate(platforms, 1):
@@ -204,7 +239,9 @@ doc.add_paragraph()
 p = doc.add_paragraph()
 run = p.add_run("Note: ")
 run.bold = True
-p.add_run("The setup for each platform takes approximately 2-5 minutes and is a one-time task.")
+p.add_run(
+    "The setup for each platform takes approximately 2-5 minutes and is a one-time task."
+)
 
 # ---------- Section 6 ----------
 doc.add_heading("Integration Guide", level=1)
@@ -216,7 +253,9 @@ doc.add_paragraph(
 
 # Hermes
 doc.add_heading("Hermes Agent", level=2)
-doc.add_paragraph("1. Install Hermes Agent (see hermes-agent.nousresearch.com/download)")
+doc.add_paragraph(
+    "1. Install Hermes Agent (see hermes-agent.nousresearch.com/download)"
+)
 doc.add_paragraph("2. Ensure you have Python 3.10+ and the scanner code downloaded")
 doc.add_paragraph("3. Install dependencies:")
 p = doc.add_paragraph()
@@ -238,17 +277,19 @@ doc.add_paragraph("5. Restart Hermes. The 7 tools will auto-discover.")
 
 # Claude Code
 doc.add_heading("Claude Code (by Anthropic)", level=2)
-doc.add_paragraph("1. Ensure Claude Code is installed (requires Anthropic subscription)")
+doc.add_paragraph(
+    "1. Ensure Claude Code is installed (requires Anthropic subscription)"
+)
 doc.add_paragraph("2. Add to ~/.claude/claude_desktop_config.json:")
 code_block2 = (
-    '{\n'
+    "{\n"
     '  "mcpServers": {\n'
     '    "sf-config-debt-scanner": {\n'
     '      "command": "python",\n'
     '      "args": ["/full/path/to/mcp_server.py"]\n'
-    '    }\n'
-    '  }\n'
-    '}\n'
+    "    }\n"
+    "  }\n"
+    "}\n"
 )
 p = doc.add_paragraph()
 run = p.add_run(code_block2)
@@ -259,12 +300,12 @@ doc.add_paragraph("3. Restart Claude Code. The tools will appear automatically."
 # Cursor
 doc.add_heading("Cursor", level=2)
 for s in [
-    'Open Cursor Settings > Features > MCP Servers',
+    "Open Cursor Settings > Features > MCP Servers",
     'Click "Add New MCP Server"',
-    'Set Name to: sf-config-debt-scanner',
-    'Set Type to: command',
-    'Set Command to: python /full/path/to/mcp_server.py',
-    'Click Save. The tools will appear in the MCP panel.',
+    "Set Name to: sf-config-debt-scanner",
+    "Set Type to: command",
+    "Set Command to: python /full/path/to/mcp_server.py",
+    "Click Save. The tools will appear in the MCP panel.",
 ]:
     doc.add_paragraph(s)
 
@@ -277,29 +318,39 @@ doc.add_paragraph(
 )
 
 examples = [
-    ("Metadata scan (no tenant needed)",
-     'You: "I have the $metadata XML from a tenant. Can you scan it for configuration debt?"\n\n'
-     "[Paste the XML content]\n\n"
-     "Agent: Shows entity breakdown, custom field concentration, field count warnings, "
-     "debt score, and remediation roadmap."),
-    ("Tenant connection test",
-     'You: "Can you test the connection to api55.sapsf.eu using basic auth?"\n\n'
-     'Agent: "Yes. Please provide your username and password."\n'
-     "[Provide credentials]\n\n"
-     "Agent: Confirms connectivity and shows record counts for EmpJob, User, Position, etc."),
-    ("Full tenant scan",
-     'You: "Run a full config debt scan against our production tenant."\n\n'
-     "Agent: Guides you through providing the connection details.\n\n"
-     "Agent: Returns a full report with debt score (e.g., 42/100 - Moderate), "
-     "categorized findings, and a 90-day action plan."),
-    ("Workshop preparation",
-     'You: "Give me assessment questions for governance and custom fields."\n\n'
-     "Agent: Returns structured assessment questions with severity ratings and "
-     "rationale for each, ready to use in your workshop."),
-    ("Custom finding scoring",
-     'You: "Here are 15 findings from our audit. Score these and give me a roadmap."\n\n'
-     "Agent: Scores each finding, calculates overall debt score, and produces "
-     "a priority-ranked 90-day roadmap."),
+    (
+        "Metadata scan (no tenant needed)",
+        'You: "I have the $metadata XML from a tenant. Can you scan it for configuration debt?"\n\n'
+        "[Paste the XML content]\n\n"
+        "Agent: Shows entity breakdown, custom field concentration, field count warnings, "
+        "debt score, and remediation roadmap.",
+    ),
+    (
+        "Tenant connection test",
+        'You: "Can you test the connection to api55.sapsf.eu using basic auth?"\n\n'
+        'Agent: "Yes. Please provide your username and password."\n'
+        "[Provide credentials]\n\n"
+        "Agent: Confirms connectivity and shows record counts for EmpJob, User, Position, etc.",
+    ),
+    (
+        "Full tenant scan",
+        'You: "Run a full config debt scan against our production tenant."\n\n'
+        "Agent: Guides you through providing the connection details.\n\n"
+        "Agent: Returns a full report with debt score (e.g., 42/100 - Moderate), "
+        "categorized findings, and a 90-day action plan.",
+    ),
+    (
+        "Workshop preparation",
+        'You: "Give me assessment questions for governance and custom fields."\n\n'
+        "Agent: Returns structured assessment questions with severity ratings and "
+        "rationale for each, ready to use in your workshop.",
+    ),
+    (
+        "Custom finding scoring",
+        'You: "Here are 15 findings from our audit. Score these and give me a roadmap."\n\n'
+        "Agent: Scores each finding, calculates overall debt score, and produces "
+        "a priority-ranked 90-day roadmap.",
+    ),
 ]
 
 for title, content in examples:
@@ -324,29 +375,43 @@ for pt in privacy_points:
 doc.add_heading("FAQ", level=1)
 
 faqs = [
-    ("Do I need coding skills to use this?",
-     "No. The AI agent handles all the technical interaction. You communicate in plain English. "
-     "The one-time setup requires someone technical to configure the MCP plugin, but daily use "
-     "is purely conversational."),
-    ("Does this connect to my live production tenant?",
-     "Yes, it connects via OData v2 using the same API endpoints your existing tools use. "
-     "It reads schema metadata and record counts only - never employee data."),
-    ("Is this SAP-approved?",
-     "The scanner uses standard SAP SuccessFactors OData v2 APIs. It operates as a read-only "
-     "analytics tool and does not modify any tenant configuration."),
-    ("Can multiple people use the same scanner?",
-     "Yes. Once the MCP server is configured on a shared machine or server, anyone with access "
-     "to the AI agent can use it."),
-    ("How often should I scan?",
-     "Quarterly scans are recommended for most tenants, or per-release-cycle (every 6 months "
-     "coinciding with SAP SF releases). The 90-day roadmap helps prioritize which findings to "
-     "address first."),
-    ("What if I don't have an AI agent installed?",
-     "You can still use the scanner directly via the Python command line or through the browser "
-     "dashboard. See the README file for CLI usage."),
-    ("Is there a cost?",
-     "The scanner itself is free and open-source. The AI agent you use to interact with it may "
-     "have its own subscription (e.g., Claude Code) or be free (e.g., Hermes Agent)."),
+    (
+        "Do I need coding skills to use this?",
+        "No. The AI agent handles all the technical interaction. You communicate in plain English. "
+        "The one-time setup requires someone technical to configure the MCP plugin, but daily use "
+        "is purely conversational.",
+    ),
+    (
+        "Does this connect to my live production tenant?",
+        "Yes, it connects via OData v2 using the same API endpoints your existing tools use. "
+        "It reads schema metadata and record counts only - never employee data.",
+    ),
+    (
+        "Is this SAP-approved?",
+        "The scanner uses standard SAP SuccessFactors OData v2 APIs. It operates as a read-only "
+        "analytics tool and does not modify any tenant configuration.",
+    ),
+    (
+        "Can multiple people use the same scanner?",
+        "Yes. Once the MCP server is configured on a shared machine or server, anyone with access "
+        "to the AI agent can use it.",
+    ),
+    (
+        "How often should I scan?",
+        "Quarterly scans are recommended for most tenants, or per-release-cycle (every 6 months "
+        "coinciding with SAP SF releases). The 90-day roadmap helps prioritize which findings to "
+        "address first.",
+    ),
+    (
+        "What if I don't have an AI agent installed?",
+        "You can still use the scanner directly via the Python command line or through the browser "
+        "dashboard. See the README file for CLI usage.",
+    ),
+    (
+        "Is there a cost?",
+        "The scanner itself is free and open-source. The AI agent you use to interact with it may "
+        "have its own subscription (e.g., Claude Code) or be free (e.g., Hermes Agent).",
+    ),
 ]
 
 for q, a in faqs:
@@ -375,6 +440,8 @@ run.font.color.rgb = RGBColor(0x99, 0x99, 0x99)
 run.italic = True
 
 # Save
-output_path = os.path.expanduser("~/projects/sapsf/sf-config-debt-radar/SF_Config_Debt_Scanner_Integration_Guide.docx")
+output_path = os.path.expanduser(
+    "~/projects/sapsf/sf-config-debt-radar/SF_Config_Debt_Scanner_Integration_Guide.docx"
+)
 doc.save(output_path)
 print(f"Saved to {output_path}")

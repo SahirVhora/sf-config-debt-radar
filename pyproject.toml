@@ -35,3 +35,10 @@ sf-config-debt-scanner-mcp = "mcp_server:main"
 
 [tool.setuptools.packages.find]
 include = ["sf_config_debt_radar*"]
+
+[tool.ruff.lint]
+ignore = [
+  "N802",   # do_GET/POST/OPTIONS — required by BaseHTTPRequestHandler
+  "N817",   # ElementTree imported as ET — standard alias
+  "E402",   # Module-level import not at top — test helpers need path setup first
+]

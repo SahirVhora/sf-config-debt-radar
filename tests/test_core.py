@@ -1,10 +1,9 @@
 import textwrap
 
 from sf_config_debt_radar.auth import build_basic_auth_header, derive_token_url
-from sf_config_debt_radar.metadata import parse_metadata_xml, classify_ec_entities
-from sf_config_debt_radar.scoring import score_debt
+from sf_config_debt_radar.metadata import classify_ec_entities, parse_metadata_xml
 from sf_config_debt_radar.report import build_report_model
-
+from sf_config_debt_radar.scoring import score_debt
 
 SAMPLE_METADATA = textwrap.dedent("""
 <edmx:Edmx xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata">

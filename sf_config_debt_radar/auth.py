@@ -21,12 +21,11 @@ from urllib3.util.retry import Retry
 
 from sapsf_shared.auth import AuthConfig, build_requests_auth
 
-
 # ── Thin compatibility helpers (keep existing test surface) ───────────────
 
 
 def build_basic_auth_header(username: str, password: str) -> str:
-    token = base64.b64encode(f"{username}:{password}".encode("utf-8")).decode("ascii")
+    token = base64.b64encode(f"{username}:{password}".encode()).decode("ascii")
     return f"Basic {token}"
 
 
@@ -101,7 +100,7 @@ class SFClient:
             self._token_expiry = time.time() + 3540  # 59 min optimistic default
 
     @classmethod
-    def from_config(cls, config: dict[str, Any]) -> "SFClient":
+    def from_config(cls, config: dict[str, Any]) -> SFClient:
         sf = config.get("sf", config)
         return cls(
             base_url=sf.get("base_url", ""),
