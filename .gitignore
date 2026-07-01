@@ -15,3 +15,4 @@ data/exports/
 *.swo
 *~
 .DS_Store
+.coverage
