@@ -16,6 +16,19 @@ from urllib.parse import urlparse
 PORT = int(sys.argv[2]) if len(sys.argv) > 2 and sys.argv[1] == "--port" else 5002
 APP_DIR = Path(__file__).resolve().parent
 
+# Cap request bodies so a misbehaving client cannot make the proxy buffer
+# arbitrarily large uploads. OData payloads are far smaller than this.
+MAX_BODY_BYTES = 8 * 1024 * 1024
+
+# Browser origins allowed to call the proxy. The app is served by this same
+# server, so only our own origin qualifies; anything else gets 403 so a
+# random webpage cannot relay requests through the local proxy.
+_ALLOWED_ORIGINS = {
+    f"http://localhost:{PORT}",
+    f"http://127.0.0.1:{PORT}",
+    f"http://[::1]:{PORT}",
+}
+
 # Only allow proxy requests to known SAP SuccessFactors API hosts
 _ALLOWED_HOST_SUFFIXES = (
     ".sapsf.com",
@@ -49,13 +62,21 @@ class Proxy(http.server.BaseHTTPRequestHandler):
         self.end_headers()
 
     def _cors_headers(self):
-        self.send_header("Access-Control-Allow-Origin", "*")
+        origin = self.headers.get("Origin")
+        if origin in _ALLOWED_ORIGINS:
+            self.send_header("Access-Control-Allow-Origin", origin)
+            self.send_header("Vary", "Origin")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
         self.send_header(
             "Access-Control-Allow-Headers", "Authorization, Accept, Content-Type"
         )
 
     def _handle(self, method):
+        origin = self.headers.get("Origin")
+        if origin is not None and origin not in _ALLOWED_ORIGINS:
+            self.send_error(403, "Origin not allowed")
+            return
+
         if method == "GET" and self.path in ("/", "/index.html"):
             self._serve_app()
             return
@@ -69,7 +90,14 @@ class Proxy(http.server.BaseHTTPRequestHandler):
             return
 
         data = None
-        content_length = int(self.headers.get("Content-Length", 0))
+        try:
+            content_length = int(self.headers.get("Content-Length", 0))
+        except ValueError:
+            self.send_error(400, "Invalid Content-Length")
+            return
+        if content_length > MAX_BODY_BYTES:
+            self.send_error(413, f"Request body too large. Max {MAX_BODY_BYTES} bytes")
+            return
         if content_length > 0:
             data = self.rfile.read(content_length)
 
