@@ -117,7 +117,10 @@ The `index.html` dashboard is best for:
 - Demo metadata import / paste
 - Team walkthroughs
 
-Note: Live tenant calls from the browser usually need a CORS proxy. The Python scanner is the reliable live-tenant path.
+Note: Live tenant calls from the browser usually need a CORS proxy. A minimal
+local proxy is included (`python3 proxy.py`) - tick "Use local proxy" in the
+browser app and keep Base URL as the real SF URL. The Python scanner remains
+the reliable live-tenant path.
 
 ---
 
