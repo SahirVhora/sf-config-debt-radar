@@ -20,6 +20,7 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 from sapsf_shared.auth import AuthConfig, build_requests_auth
+from sapsf_shared.pagination import trusted_pagination_url
 
 # ── Thin compatibility helpers (keep existing test surface) ───────────────
 
@@ -71,6 +72,17 @@ class SFClient:
 
     def __post_init__(self) -> None:
         self.base_url = self.base_url.rstrip("/")
+        parsed_base = urlparse(self.base_url)
+        if parsed_base.scheme.lower() != "https":
+            raise ValueError("SuccessFactors base URL must use HTTPS")
+        if (
+            not parsed_base.hostname
+            or parsed_base.username
+            or parsed_base.password
+            or parsed_base.query
+            or parsed_base.fragment
+        ):
+            raise ValueError("Invalid SuccessFactors base URL")
         self.session = _session_with_retries()
         self._token_expiry = 0.0
 
@@ -129,7 +141,7 @@ class SFClient:
         self, path: str, *, accept: str = "application/json", timeout: int = 60
     ) -> requests.Response:
         self.ensure_token()
-        url = path if path.startswith("http") else f"{self.base_url}/{path.lstrip('/')}"
+        url = trusted_pagination_url(self.base_url, path, f"{self.base_url}/")
         headers = dict(self.session.headers)
         headers["Accept"] = accept
         return self.session.get(url, headers=headers, timeout=timeout)
