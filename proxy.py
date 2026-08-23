@@ -8,8 +8,7 @@ Then tick "Use local proxy". Do not paste the localhost proxy URL into Base URL.
 
 import http.server
 import sys
-import urllib.error
-import urllib.request
+import requests
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -101,26 +100,26 @@ class Proxy(http.server.BaseHTTPRequestHandler):
         if content_length > 0:
             data = self.rfile.read(content_length)
 
-        req = urllib.request.Request(target, data=data, method=method)
-
+        forward_headers = {}
         for header in ("Authorization", "Accept", "Content-Type"):
             val = self.headers.get(header)
             if val:
-                req.add_header(header, val)
+                forward_headers[header] = val
 
-        # Disable redirect following to prevent open-redirect SSRF
-        # chains when the proxy target returns a 3xx response. Setting
-        # redirect_request to None tells urllib to surface the redirect
-        # rather than follow it.
-        class NoRedirectHandler(urllib.request.HTTPRedirectHandler):
-            def redirect_request(self, req, fp, code, msg, headers, newurl):
-                return None
-
-        opener = urllib.request.build_opener(NoRedirectHandler)
+        # Disable redirect following to prevent open-redirect SSRF chains when
+        # the proxy target returns a 3xx. SF OData auth must never be forwarded
+        # across a redirect hop.
         try:
-            resp = opener.open(req, timeout=60)
-            body = resp.read()
-            self.send_response(resp.status)
+            resp = requests.request(
+                method=method,
+                url=target,
+                data=data,
+                headers=forward_headers,
+                timeout=60,
+                allow_redirects=False,
+            )
+            body = resp.content
+            self.send_response(resp.status_code)
             self._cors_headers()
             self.send_header(
                 "Content-Type",
@@ -128,13 +127,7 @@ class Proxy(http.server.BaseHTTPRequestHandler):
             )
             self.end_headers()
             self.wfile.write(body)
-        except urllib.error.HTTPError as e:
-            body = e.read()
-            self.send_response(e.code)
-            self._cors_headers()
-            self.end_headers()
-            self.wfile.write(body)
-        except Exception as e:
+        except (requests.exceptions.RequestException, TimeoutError) as e:
             self.send_error(502, str(e))
 
     def _serve_app(self):
