@@ -4,7 +4,7 @@ urllib3==2.8.0
 defusedxml==0.7.1
 PyYAML==6.0.1
 python-docx==1.1.2
-mcp>=1.0.0
+mcp>=1.30.0,<2
 sapsf-shared @ git+https://github.com/SahirVhora/sapsf-shared.git@da247058792dd30cfed282fd2001b7aaa5a34ff2
 # Test dependencies
 pytest==9.1.1
