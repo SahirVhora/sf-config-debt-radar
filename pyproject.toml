@@ -15,7 +15,7 @@ classifiers = [
   "Programming Language :: Python :: 3",
   "Operating System :: OS Independent",
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
   "mcp>=1.0.0",
   "requests>=2.28.0",
@@ -23,7 +23,7 @@ dependencies = [
   "pyyaml>=6.0",
   "httpx>=0.27.0",
   "defusedxml>=0.7.1",
-  "sapsf-shared @ git+https://github.com/SahirVhora/sapsf-shared.git@91a4a1cccac5c1df66c215857e8a4b01608118ef",
+  "sapsf-shared @ git+https://github.com/SahirVhora/sapsf-shared.git@da247058792dd30cfed282fd2001b7aaa5a34ff2",
 ]
 
 [project.urls]
@@ -33,6 +33,9 @@ Repository = "https://github.com/SahirVhora/sf-config-debt-radar"
 [project.scripts]
 sf-config-debt-radar = "sf_config_debt_radar.cli:main"
 sf-config-debt-scanner-mcp = "mcp_server:main"
+
+[tool.setuptools]
+py-modules = ["mcp_server"]
 
 [tool.setuptools.packages.find]
 include = ["sf_config_debt_radar*"]
