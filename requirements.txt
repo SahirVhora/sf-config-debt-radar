@@ -1,10 +1,11 @@
+-c security-constraints.txt
 # SF Config Debt Radar
 requests==2.34.2
-urllib3==2.7.0
+urllib3==2.8.0
 defusedxml==0.7.1
 PyYAML==6.0.1
 python-docx==1.1.2
-mcp>=1.0.0
+mcp>=1.30.0
 sapsf-shared @ git+https://github.com/SahirVhora/sapsf-shared.git@91a4a1cccac5c1df66c215857e8a4b01608118ef
 # Test dependencies
 pytest==9.1.1
