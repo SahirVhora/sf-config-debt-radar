@@ -45,3 +45,9 @@ jobs:
       - name: Run tests
         run: |
           pytest tests/ -v --tb=short
+
+      - name: Verify installed wheel outside checkout
+        run: |
+          pip wheel --no-deps --wheel-dir dist .
+          pip install --no-deps --force-reinstall dist/*.whl
+          cd /tmp && python -c 'import mcp_server; assert callable(mcp_server.main)'
